@@ -2,9 +2,11 @@ package display
 
 import (
 	"github.com/fatih/color"
+	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
 )
 
 func DisplayHeader() {
+	terminal.ClearConsole()
 	print := color.New(color.FgHiCyan).PrintlnFunc()
 
 	print("==============================")
@@ -12,11 +14,4 @@ func DisplayHeader() {
 	print("|     Dev Setup Manager      |")
 	print("|                     hsk-kr |")
 	print("==============================")
-}
-
-func DisplayStep(stepName string) {
-	print := color.New(color.FgHiBlue).PrintfFunc()
-
-	print("%s\n", stepName)
-	print("---\n")
 }

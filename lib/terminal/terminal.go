@@ -1,11 +1,28 @@
 package terminal
 
 import (
+	"errors"
 	"fmt"
+	"os"
+	"os/exec"
 
 	"github.com/fatih/color"
 	"github.com/mattn/go-tty"
 )
+
+func ShowCursor() {
+	fmt.Print("\033[?25h")
+}
+
+func HideCursor() {
+	fmt.Print("\033[?25l")
+}
+
+func ClearConsole() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+}
 
 func MoveCursor(x, relativeY int) {
 	if relativeY < 0 {
@@ -16,11 +33,10 @@ func MoveCursor(x, relativeY int) {
 }
 
 /*
-*
-
-	Display items and returns the index of the item, which starts from zero
+Display items and returns the name of the item
+If user presses esc, it returns empty string with an error
 */
-func Select(items []string) int {
+func Select(items []string) (string, error) {
 	print := color.New(color.FgWhite).PrintfFunc()
 	cursor := color.New(color.FgGreen).Add(color.Bold).PrintFunc()
 	itemLength := len(items)
@@ -33,13 +49,13 @@ func Select(items []string) int {
 	eraseCurrentCursor := func() {
 		MoveCursor(1, -itemLength+currentIndex)
 		cursor(" ")
-		MoveCursor(1, -(-itemLength+currentIndex)+itemLength)
+		MoveCursor(1, -(-itemLength + currentIndex))
 	}
 
 	drawCurrentCursor := func() {
 		MoveCursor(1, -itemLength+currentIndex)
 		cursor(">")
-		MoveCursor(1, -(-itemLength+currentIndex)+itemLength)
+		MoveCursor(1, -(-itemLength + currentIndex))
 	}
 
 	drawCurrentCursor()
@@ -51,23 +67,24 @@ func Select(items []string) int {
 	defer t.Close()
 
 	for {
-		r, err := t.ReadRune()
-		if err != nil {
-			panic(err)
-		}
+		r, _ := t.ReadRune()
 
 		switch r {
+		case '\x1b':
+			return "", errors.New("Escape")
 		case 'j', 'J', 'h', 'H':
-			eraseCurrentCursor()
-			if currentIndex < itemLength-1 {
-				currentIndex++
+			if currentIndex >= itemLength-1 {
+				break
 			}
+			eraseCurrentCursor()
+			currentIndex++
 			drawCurrentCursor()
 		case 'k', 'K', 'l', 'L':
-			eraseCurrentCursor()
-			if currentIndex > 0 {
-				currentIndex--
+			if currentIndex <= 0 {
+				break
 			}
+			eraseCurrentCursor()
+			currentIndex--
 			drawCurrentCursor()
 		}
 
@@ -76,5 +93,5 @@ func Select(items []string) int {
 		}
 	}
 
-	return currentIndex
+	return items[currentIndex], nil
 }
