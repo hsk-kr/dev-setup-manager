@@ -6,7 +6,14 @@ import (
 )
 
 func Home() {
-	items := []string{"Tools", "Shell", "Dotfiles"}
+	items := []terminal.SelectItem{{
+		Name: "Tools",
+	}, {
+		Name: "Shell",
+	}, {
+		Name: "Dotfiles",
+	},
+	}
 
 	display.DisplayHeader()
 
@@ -22,6 +29,9 @@ func Home() {
 			Tools()
 		default:
 			NotSupported(choice)
+			continue
 		}
+
+		display.DisplayHeader()
 	}
 }

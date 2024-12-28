@@ -10,6 +10,12 @@ import (
 	"github.com/mattn/go-tty"
 )
 
+type SelectItem struct {
+	Name     string
+	Render   func(name string)
+	Disabled bool
+}
+
 func ShowCursor() {
 	fmt.Print("\033[?25h")
 }
@@ -36,14 +42,22 @@ func MoveCursor(x, relativeY int) {
 Display items and returns the name of the item
 If user presses esc, it returns empty string with an error
 */
-func Select(items []string) (string, error) {
+func Select(items []SelectItem) (string, error) {
 	print := color.New(color.FgWhite).PrintfFunc()
 	cursor := color.New(color.FgGreen).Add(color.Bold).PrintFunc()
 	itemLength := len(items)
 	currentIndex := 0
 
 	for _, item := range items {
-		print("   %s\n", item)
+		print("   ")
+
+		if item.Render != nil {
+			item.Render(item.Name)
+		} else {
+			print(item.Name)
+		}
+
+		print("\n")
 	}
 
 	eraseCurrentCursor := func() {
@@ -88,10 +102,10 @@ func Select(items []string) (string, error) {
 			drawCurrentCursor()
 		}
 
-		if r == '\r' || r == '\n' {
+		if (r == '\r' || r == '\n') && !items[currentIndex].Disabled {
 			break
 		}
 	}
 
-	return items[currentIndex], nil
+	return items[currentIndex].Name, nil
 }
