@@ -3,17 +3,10 @@ package tools
 import (
 	"os"
 	"os/exec"
-	"strings"
 )
 
 func IsHomebrewInstalled() bool {
-	output, err := exec.Command("brew", "-v").Output()
-
-	if err != nil {
-		panic(err)
-	}
-
-	return strings.HasPrefix(string(output), "Homebrew ")
+	return ExistCommand("brew")
 }
 
 // TODO: Not tested if it installs homebrew correctly

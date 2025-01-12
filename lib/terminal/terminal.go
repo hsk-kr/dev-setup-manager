@@ -13,6 +13,7 @@ import (
 type SelectItem struct {
 	Name     string
 	Render   func(name string)
+	Install  func()
 	Disabled bool
 }
 

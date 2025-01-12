@@ -21,35 +21,25 @@ func Tools() {
 
 	installedSoftwareList := <-installedSoftwareListChan
 
-	printSoftwareAvailability := func(name string, isInstalled bool) {
-		installedPen := color.New(color.FgHiGreen).PrintFunc()
-		notInstalledPen := color.New(color.FgRed).PrintFunc()
-		softwareNamePen := color.New(color.FgWhite).PrintFunc()
-
-		softwareNamePen(name)
-		if isInstalled {
-			installedPen("- Installed")
-		} else {
-			notInstalledPen("- Not Installed")
-		}
-	}
-
 	items := []terminal.SelectItem{
 		{
-			Name: "Homebrew",
-			Render: func(name string) {
-				printSoftwareAvailability(name, installedSoftwareList.Homebrew)
-			},
+			Name:     "Homebrew",
+			Render:   RenderItem(installedSoftwareList.Homebrew),
 			Disabled: installedSoftwareList.Homebrew,
+			Install:  tools.InstallHomebrew,
 		},
 		{
-			Name: "WezTerm",
+			Name:     "WezTerm",
+			Render:   RenderItem(installedSoftwareList.WezTerm),
+			Disabled: installedSoftwareList.WezTerm,
+			Install:  tools.InstallWezTerm,
 		},
-
 		{
 			Name: "Neovim",
 		},
-
+		{
+			Name: "tmux",
+		},
 		{
 			Name: "Aerospace",
 		},
@@ -57,11 +47,9 @@ func Tools() {
 		{
 			Name: "Homerow",
 		},
-
 		{
 			Name: "Karabiner Elements",
 		},
-
 		{
 			Name: "Snipaste",
 		},
@@ -71,6 +59,15 @@ func Tools() {
 		},
 		{
 			Name: "zsh-vi-mode",
+		},
+		{
+			Name: "docker",
+		},
+		{
+			Name: "nvm",
+		},
+		{
+			Name: "gvm",
 		},
 	}
 
@@ -85,12 +82,31 @@ func Tools() {
 			return
 		}
 
-		switch choice {
-		case "Homebrew":
-			tools.InstallHomebrew()
-		default:
-			NotSupported(choice)
-			continue
+		for _, software := range items {
+			if software.Name == choice {
+				if software.Install == nil {
+					NotSupported(choice)
+				} else if !software.Disabled {
+					software.Install()
+				}
+
+				break
+			}
+		}
+	}
+}
+
+func RenderItem(isInstalled bool) func(string) {
+	return func(name string) {
+		installedPen := color.New(color.FgHiGreen).PrintFunc()
+		notInstalledPen := color.New(color.FgRed).PrintFunc()
+		softwareNamePen := color.New(color.FgWhite).PrintFunc()
+
+		softwareNamePen(name)
+		if isInstalled {
+			installedPen(" - Installed")
+		} else {
+			notInstalledPen(" - Not Installed")
 		}
 	}
 }
