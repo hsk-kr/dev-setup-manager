@@ -35,7 +35,10 @@ func Tools() {
 			Install:  tools.InstallWezTerm,
 		},
 		{
-			Name: "Neovim",
+			Name:     "Neovim",
+			Render:   RenderItem(installedSoftwareList.Neovim),
+			Disabled: installedSoftwareList.Neovim,
+			Install:  tools.InstallNeovim,
 		},
 		{
 			Name: "tmux",
@@ -82,12 +85,14 @@ func Tools() {
 			return
 		}
 
-		for _, software := range items {
+		for i, software := range items {
 			if software.Name == choice {
 				if software.Install == nil {
 					NotSupported(choice)
 				} else if !software.Disabled {
 					software.Install()
+					items[i].Render = RenderItem(true)
+					items[i].Disabled = true
 				}
 
 				break

@@ -1,13 +1,14 @@
 package tools
 
 import (
+	"os"
 	"os/exec"
-	"strings"
 )
 
 type InstalledSoftwareList struct {
 	Homebrew bool
 	WezTerm  bool
+	Neovim   bool
 }
 
 /*
@@ -20,6 +21,7 @@ func CreateInstalledSoftwareList() (*InstalledSoftwareList, func()) {
 	updateInstalledSoftware := func() {
 		installedSoftwareList.Homebrew = IsHomebrewInstalled()
 		installedSoftwareList.WezTerm = IsWezTermInstalled()
+		installedSoftwareList.Neovim = IsNeovimInstalled()
 	}
 
 	updateInstalledSoftware()
@@ -28,13 +30,13 @@ func CreateInstalledSoftwareList() (*InstalledSoftwareList, func()) {
 }
 
 func ExistCommand(cmd string) bool {
-	output, err := exec.Command(cmd, "-v").Output()
+	_, err := exec.Command(cmd, "-v").Output()
 
 	if err != nil {
-		panic(err)
+		return false
 	}
 
-	return !strings.Contains(string(output), "command not found")
+	return true
 }
 
 func ExistApplication(appName string) bool {
@@ -63,4 +65,18 @@ func ExistApplication(appName string) bool {
 	}
 
 	return len(string(output)) >= len(appName)
+}
+
+func ExecCommand(command string, args ...string) {
+	cmd := exec.Command(command, args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
+
+	if err := cmd.Start(); err != nil {
+		panic(err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		panic(err)
+	}
 }
