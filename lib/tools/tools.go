@@ -3,12 +3,28 @@ package tools
 import (
 	"os"
 	"os/exec"
+
+	"github.com/fatih/color"
 )
 
 type InstalledSoftwareList struct {
 	Homebrew bool
 	WezTerm  bool
 	Neovim   bool
+	Tmux     bool
+}
+
+func RenderItem(name string, disabled bool) {
+	installedPen := color.New(color.FgHiGreen).PrintFunc()
+	notInstalledPen := color.New(color.FgRed).PrintFunc()
+	softwareNamePen := color.New(color.FgWhite).PrintFunc()
+
+	softwareNamePen(name)
+	if disabled {
+		installedPen(" - Installed")
+	} else {
+		notInstalledPen(" - Not Installed")
+	}
 }
 
 /*
@@ -22,6 +38,7 @@ func CreateInstalledSoftwareList() (*InstalledSoftwareList, func()) {
 		installedSoftwareList.Homebrew = IsHomebrewInstalled()
 		installedSoftwareList.WezTerm = IsWezTermInstalled()
 		installedSoftwareList.Neovim = IsNeovimInstalled()
+		installedSoftwareList.Tmux = IsTmuxInstalled()
 	}
 
 	updateInstalledSoftware()
@@ -30,7 +47,7 @@ func CreateInstalledSoftwareList() (*InstalledSoftwareList, func()) {
 }
 
 func ExistCommand(cmd string) bool {
-	_, err := exec.Command(cmd, "-v").Output()
+	_, err := exec.Command("which", cmd).Output()
 
 	if err != nil {
 		return false

@@ -11,10 +11,17 @@ import (
 )
 
 type SelectItem struct {
-	Name     string
-	Render   func(name string)
-	Install  func()
-	Disabled bool
+	Name        string
+	Render      func(name string, disabled bool)
+	Run         func()
+	GetDisabled func() bool
+	Disabled    bool
+}
+
+func (si *SelectItem) UpdateDisabled() {
+	if si.GetDisabled != nil {
+		si.Disabled = si.GetDisabled()
+	}
 }
 
 func ShowCursor() {
@@ -53,7 +60,7 @@ func Select(items []SelectItem) (string, error) {
 		print("   ")
 
 		if item.Render != nil {
-			item.Render(item.Name)
+			item.Render(item.Name, item.Disabled)
 		} else {
 			print(item.Name)
 		}
