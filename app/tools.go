@@ -1,59 +1,31 @@
 package app
 
 import (
+	"sync"
+
 	"github.com/fatih/color"
 	"github.com/hsk-kr/dev-setup-manager/lib/display"
 	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
 	"github.com/hsk-kr/dev-setup-manager/lib/tools"
 )
 
-func Tools() {
-	loadingPen := color.New(color.FgHiGreen).PrintfFunc()
-
-	installedSoftwareListChan := make(chan *tools.InstalledSoftwareList)
-
-	loadingPen("Reading installed software...\n")
-
-	go func() {
-		installedSoftwareList, _ := tools.CreateInstalledSoftwareList()
-		installedSoftwareListChan <- installedSoftwareList
-	}()
-
-	installedSoftwareList := <-installedSoftwareListChan
-
-	items := []terminal.SelectItem{
+func GetSelectItems() []terminal.SelectItem {
+	return []terminal.SelectItem{
 		{
-			Name:        "Homebrew",
-			Render:      tools.RenderItem,
-			Disabled:    installedSoftwareList.Homebrew,
-			Run:         tools.InstallHomebrew,
-			GetDisabled: tools.IsHomebrewInstalled,
+			Name: "Homebrew",
 		},
 		{
-			Name:        "WezTerm",
-			Render:      tools.RenderItem,
-			Disabled:    installedSoftwareList.WezTerm,
-			Run:         tools.InstallWezTerm,
-			GetDisabled: tools.IsWezTermInstalled,
+			Name: "WezTerm",
 		},
 		{
-			Name:        "Neovim",
-			Render:      tools.RenderItem,
-			Disabled:    installedSoftwareList.Neovim,
-			Run:         tools.InstallNeovim,
-			GetDisabled: tools.IsNeovimInstalled,
+			Name: "Neovim",
 		},
 		{
-			Name:        "tmux",
-			Render:      tools.RenderItem,
-			Disabled:    installedSoftwareList.Tmux,
-			Run:         tools.InstallTmux,
-			GetDisabled: tools.IsTmuxInstalled,
+			Name: "tmux",
 		},
 		{
-			Name: "Aerospace",
+			Name: "AeroSpace",
 		},
-
 		{
 			Name: "Homerow",
 		},
@@ -63,7 +35,9 @@ func Tools() {
 		{
 			Name: "Snipaste",
 		},
-
+		{
+			Name: "ripgrep",
+		},
 		{
 			Name: "fzf",
 		},
@@ -80,6 +54,35 @@ func Tools() {
 			Name: "gvm",
 		},
 	}
+}
+
+func Tools() {
+	loadingPen := color.New(color.FgHiGreen).PrintfFunc()
+
+	loadingPen("Reading installed software...\n")
+
+	items := GetSelectItems()
+
+	// Initilaize item properties
+	var wg sync.WaitGroup
+	for i, item := range items {
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+			items[i].Render = tools.RenderItem
+			items[i].GetDisabled = func() bool {
+				installed, _ := tools.IsInstalled(items[i].Name)
+				return installed
+			}
+			items[i].Disabled = item.GetDisabled()
+			items[i].Run = func() {
+				tools.Install(items[i].Name)
+			}
+		}()
+	}
+
+	wg.Wait()
 
 	display.DisplayHeader()
 	print := color.New(color.FgGreen).PrintlnFunc()

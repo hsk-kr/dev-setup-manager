@@ -7,13 +7,6 @@ import (
 	"github.com/fatih/color"
 )
 
-type InstalledSoftwareList struct {
-	Homebrew bool
-	WezTerm  bool
-	Neovim   bool
-	Tmux     bool
-}
-
 func RenderItem(name string, disabled bool) {
 	installedPen := color.New(color.FgHiGreen).PrintFunc()
 	notInstalledPen := color.New(color.FgRed).PrintFunc()
@@ -27,27 +20,18 @@ func RenderItem(name string, disabled bool) {
 	}
 }
 
-/*
-first value contains if software is installed or not,
-to update this first value, you should call the function given in the return value
-*/
-func CreateInstalledSoftwareList() (*InstalledSoftwareList, func()) {
-	installedSoftwareList := InstalledSoftwareList{}
-
-	updateInstalledSoftware := func() {
-		installedSoftwareList.Homebrew = IsHomebrewInstalled()
-		installedSoftwareList.WezTerm = IsWezTermInstalled()
-		installedSoftwareList.Neovim = IsNeovimInstalled()
-		installedSoftwareList.Tmux = IsTmuxInstalled()
-	}
-
-	updateInstalledSoftware()
-
-	return &installedSoftwareList, updateInstalledSoftware
-}
-
 func ExistCommand(cmd string) bool {
 	_, err := exec.Command("which", cmd).Output()
+
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
+func ExistBrewPackage(packageName string) bool {
+	_, err := exec.Command("brew", "list", packageName).Output()
 
 	if err != nil {
 		return false
