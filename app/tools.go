@@ -65,7 +65,7 @@ func Tools() {
 
 	// Initilaize item properties
 	var wg sync.WaitGroup
-	for i, item := range items {
+	for i := range items {
 		wg.Add(1)
 
 		go func() {
@@ -75,13 +75,12 @@ func Tools() {
 				installed, _ := tools.IsInstalled(items[i].Name)
 				return installed
 			}
-			items[i].Disabled = item.GetDisabled()
+			items[i].Disabled = items[i].GetDisabled()
 			items[i].Run = func() {
 				tools.Install(items[i].Name)
 			}
 		}()
 	}
-
 	wg.Wait()
 
 	display.DisplayHeader()

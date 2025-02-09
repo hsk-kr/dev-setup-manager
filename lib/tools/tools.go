@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 
@@ -68,6 +69,20 @@ func ExistApplication(appName string) bool {
 	return len(string(output)) >= len(appName)
 }
 
+func ExecCommandWithIgnoreError(command string, args ...string) {
+	cmd := exec.Command(command, args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
+
+	if err := cmd.Start(); err != nil {
+		return
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return
+	}
+}
+
 func ExecCommand(command string, args ...string) {
 	cmd := exec.Command(command, args...)
 	cmd.Stdout = os.Stdout
@@ -80,4 +95,26 @@ func ExecCommand(command string, args ...string) {
 	if err := cmd.Wait(); err != nil {
 		panic(err)
 	}
+}
+
+func AddZshSource(source string) {
+	homePath, homePathErr := os.UserHomeDir()
+
+	if homePathErr != nil {
+		panic(homePathErr)
+	}
+
+	f, err := os.OpenFile(homePath+"/.zshrc", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+	f.WriteString(fmt.Sprintf("\n%s\n", source))
+}
+
+func WarningMessage(message string) {
+	print := color.New(color.FgRed).PrintlnFunc()
+	print(message)
 }
