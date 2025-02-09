@@ -1,3 +1,7 @@
 # Dev Setup Manager
 
-Target Device: M-chip MacBook air
+|Category|Value|
+|---|---|
+|Device|Macnbook Air M1|
+|Shell|zsh|
+
