@@ -35,7 +35,7 @@ func Install(app string) error {
 		ExecCommand("brew", "install", "docker")
 	case "nvm":
 		ExecCommand("brew", "install", "nvm")
-		ExecCommand("mkdir", "~/.nvm")
+		ExecCommand("mkdir", "-p", "~/.nvm")
 		AddZshSource("export NVM_DIR=\"$HOME/.nvm\"\n [ -s \"$HOMEBREW_PREFIX/opt/nvm/nvm.sh\" ] && \\. \"$HOMEBREW_PREFIX/opt/nvm/nvm.sh\"\n [ -s \"$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm\" ] && \\. \"$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm\"")
 		WarningMessage("Run source ~/.zshrc to use nvm without reopening the terminal.")
 	case "gvm":
