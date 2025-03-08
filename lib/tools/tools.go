@@ -1,9 +1,11 @@
 package tools
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -97,21 +99,118 @@ func ExecCommand(command string, args ...string) {
 	}
 }
 
-func AddZshSource(source string) {
-	homePath, homePathErr := os.UserHomeDir()
+/*
+Add the source to ~/dev-setup-manager/dev.zsh
 
-	if homePathErr != nil {
-		panic(homePathErr)
-	}
+It will insert the line to import dev.zsh from .zshrc if it's not setup.
 
-	f, err := os.OpenFile(homePath+"/.zshrc", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+If the source exists in the dev.zsh, it will be ignored.
+*/
+func AddZshSource(source string) error {
+	homePath, err := os.UserHomeDir()
 
 	if err != nil {
-		panic(err)
+		WarningMessage(err.Error())
+		return err
+	}
+
+	devSetupManagerHomePath := homePath + "/dev-setup-manager"
+	devSetupManagerZshPath := devSetupManagerHomePath + "/dev.zsh"
+	zshrcPath := devSetupManagerHomePath + ".zshrc"
+	ExecCommand("mkdir", "-p", devSetupManagerHomePath)
+
+	// add source into dev.zsh. if it's already setup, it does nothing
+	addSourceToDevZsh := func() error {
+		exist, err := existFile(devSetupManagerZshPath)
+
+		if err != nil {
+			return err
+		}
+
+		if exist {
+			contains, err := containInFile(devSetupManagerZshPath, source)
+
+			if err != nil {
+				return err
+			}
+
+			if contains {
+				return nil
+			}
+		}
+
+		err = appendFile(devSetupManagerZshPath, fmt.Sprintf("\n%s", source))
+		return err
+	}
+
+	// add source dev zsh into .zshrc. if it's already setup, it does nothing
+	addDevZshToZshrc := func() error {
+		exist, err := existFile(zshrcPath)
+
+		if err != nil {
+			return err
+		}
+
+		if exist {
+			contains, err := containInFile(zshrcPath, devSetupManagerZshPath)
+
+			if err != nil {
+				return err
+			}
+
+			if contains {
+				return nil
+			}
+		}
+
+		err = appendFile(zshrcPath, fmt.Sprintf("\nsource %s", devSetupManagerZshPath))
+		return nil
+	}
+
+	err = addDevZshToZshrc()
+	if err != nil {
+		WarningMessage(err.Error())
+		return err
+	}
+
+	return addSourceToDevZsh()
+}
+
+func existFile(path string) (bool, error) {
+	_, err := os.Stat(path)
+
+	if err == nil {
+		return true, nil
+	} else if errors.Is(err, os.ErrExist) {
+		return false, nil
+	}
+
+	return false, err
+}
+
+/*
+Returns if the str exists in the content of the file or not
+*/
+func containInFile(path, str string) (bool, error) {
+	bContent, err := os.ReadFile(path)
+
+	if err != nil {
+		return false, err
+	}
+
+	return strings.Contains(string(bContent), str), nil
+}
+
+func appendFile(path, content string) error {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+	if err != nil {
+		return err
 	}
 
 	defer f.Close()
-	f.WriteString(fmt.Sprintf("\n%s\n", source))
+	f.WriteString(content)
+	return nil
 }
 
 func WarningMessage(message string) {
