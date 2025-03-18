@@ -16,7 +16,7 @@ func Home() {
 	},
 	}
 
-	display.DisplayHeader()
+	display.DisplayHeader(true)
 
 	for {
 		choice, err := terminal.Select(items)
@@ -28,18 +28,18 @@ func Home() {
 		switch choice {
 		case "Tools":
 			Tools()
+			display.DisplayHeader(true)
+			continue
 		case "Zshrc":
 			tools.SetupZshrc()
+			tools.SuccessMessage("Done .zshrc setup.\nCheck ~/dev-setup-manager/dev.zsh file.\nThe setup could have duplicated zsh as the setup's updated.")
+		case "Dotfiles":
+			tools.SetupDotfiles()
+			tools.SuccessMessage("Done dotfiles setup.\nCheck ~/dev-setup-manager/dotfiles.\nIf you already had the dotfiles before, it would be reinstalled.")
 		default:
 			NotSupported(choice)
-			continue
 		}
 
-		display.DisplayHeader()
-
-		switch choice {
-		case "Zshrc":
-			tools.SuccessMessage("Done .zshrc setup.\nCheck ~/dev-setup-manager/dev.zsh file.\nThe setup could have duplicated zsh as the setup's updated.")
-		}
+		display.DisplayHeader(false)
 	}
 }

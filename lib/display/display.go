@@ -5,8 +5,10 @@ import (
 	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
 )
 
-func DisplayHeader() {
-	terminal.ClearConsole()
+func DisplayHeader(clearConsole bool) {
+	if clearConsole {
+		terminal.ClearConsole()
+	}
 	print := color.New(color.FgHiCyan).PrintlnFunc()
 
 	print("==============================")

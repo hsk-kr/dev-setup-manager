@@ -12,6 +12,9 @@ import (
 func GetSelectItems() []terminal.SelectItem {
 	return []terminal.SelectItem{
 		{
+			Name: "Git",
+		},
+		{
 			Name: "Homebrew",
 		},
 		{
@@ -83,7 +86,7 @@ func Tools() {
 	}
 	wg.Wait()
 
-	display.DisplayHeader()
+	display.DisplayHeader(true)
 	print := color.New(color.FgGreen).PrintlnFunc()
 	print("Select item you install")
 
