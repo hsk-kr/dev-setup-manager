@@ -116,7 +116,7 @@ func AddZshSource(source string) error {
 
 	devSetupManagerHomePath := homePath + "/dev-setup-manager"
 	devSetupManagerZshPath := devSetupManagerHomePath + "/dev.zsh"
-	zshrcPath := devSetupManagerHomePath + ".zshrc"
+	zshrcPath := homePath + "/.zshrc"
 	ExecCommand("mkdir", "-p", devSetupManagerHomePath)
 
 	// add source into dev.zsh. if it's already setup, it does nothing
@@ -167,13 +167,13 @@ func AddZshSource(source string) error {
 		return nil
 	}
 
-	err = addDevZshToZshrc()
+	err = addSourceToDevZsh()
 	if err != nil {
 		WarningMessage(err.Error())
 		return err
 	}
 
-	return addSourceToDevZsh()
+	return addDevZshToZshrc()
 }
 
 func existFile(path string) (bool, error) {
@@ -181,7 +181,7 @@ func existFile(path string) (bool, error) {
 
 	if err == nil {
 		return true, nil
-	} else if errors.Is(err, os.ErrExist) {
+	} else if errors.Is(err, os.ErrNotExist) {
 		return false, nil
 	}
 
@@ -215,5 +215,10 @@ func appendFile(path, content string) error {
 
 func WarningMessage(message string) {
 	print := color.New(color.FgRed).PrintlnFunc()
+	print(message)
+}
+
+func SuccessMessage(message string) {
+	print := color.New(color.FgGreen).PrintlnFunc()
 	print(message)
 }
