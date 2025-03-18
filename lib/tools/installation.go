@@ -8,7 +8,7 @@ import (
 func Install(app string) error {
 	switch app {
 	case "Homebrew":
-		ExecCommand("/bin/bash", "-c", `"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`)
+		ExecCommand("/bin/bash", "-c", "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash")
 	case "Git":
 		ExecCommand("brew", "install", "git")
 	case "WezTerm":
