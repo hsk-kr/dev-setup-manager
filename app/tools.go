@@ -12,10 +12,10 @@ import (
 func GetSelectItems() []terminal.SelectItem {
 	return []terminal.SelectItem{
 		{
-			Name: "Git",
+			Name: "Homebrew",
 		},
 		{
-			Name: "Homebrew",
+			Name: "Git",
 		},
 		{
 			Name: "WezTerm",

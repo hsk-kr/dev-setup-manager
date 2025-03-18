@@ -8,7 +8,7 @@ import (
 func Install(app string) error {
 	switch app {
 	case "Homebrew":
-		ExecCommand("/bin/bash", "-c", "\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"")
+		ExecCommand("/bin/bash", "-c", `"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`)
 	case "Git":
 		ExecCommand("brew", "install", "git")
 	case "WezTerm":
@@ -59,7 +59,7 @@ func IsInstalled(app string) (bool, error) {
 	case "Homebrew":
 		return ExistCommand("brew"), nil
 	case "Git":
-		return ExistCommand("git"), nil
+		return ExistBrewPackage("git"), nil
 	case "WezTerm":
 		return ExistApplication("WezTerm.app"), nil
 	case "Neovim":
