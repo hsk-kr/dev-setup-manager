@@ -1,0 +1,26 @@
+name: Build Go Binary and Upload
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Build for macOS (M1)
+        run: GOOS=darwin GOARCH=arm64 go build -o dev-setup-manager main.go
+
+      - name: Upload binary as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-setup-manager
+          path: dev-setup-manager
