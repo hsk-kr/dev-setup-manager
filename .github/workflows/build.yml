@@ -26,24 +26,12 @@ jobs:
       - name: Build for macOS (M1)
         run: GOOS=darwin GOARCH=arm64 go build -o dev-setup-manager main.go
 
-      - name: Build for macOS (Intel)
-        run: GOOS=darwin GOARCH=amd64 go build -o dev-setup-manager-intel main.go
-
-      - name: Build for Linux
-        run: GOOS=linux GOARCH=amd64 go build -o dev-setup-manager-linux main.go
-
-      - name: Build for Windows
-        run: GOOS=windows GOARCH=amd64 go build -o dev-setup-manager.exe main.go
-
       - name: Upload binaries as artifacts
         uses: actions/upload-artifact@v4
         with:
           name: binaries
           path: |
             dev-setup-manager
-            dev-setup-manager-intel
-            dev-setup-manager-linux
-            dev-setup-manager.exe
 
       - name: Create a Release
         uses: elgohr/Github-Release-Action@v5
