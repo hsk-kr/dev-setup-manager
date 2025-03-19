@@ -1,15 +1,24 @@
-name: Build Go Binary and Upload
+name: Build and Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number"
+        required: true
+        default: "v0.1.0"
+      release-notes:
+        description: "Release notes"
+        required: false
+        default: "Initial release"
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4"
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -19,8 +28,29 @@ jobs:
       - name: Build for macOS (M1)
         run: GOOS=darwin GOARCH=arm64 go build -o dev-setup-manager main.go
 
-      - name: Upload binary as artifact
+      - name: Build for macOS (Intel)
+        run: GOOS=darwin GOARCH=amd64 go build -o dev-setup-manager-intel main.go
+
+      - name: Build for Linux
+        run: GOOS=linux GOARCH=amd64 go build -o dev-setup-manager-linux main.go
+
+      - name: Build for Windows
+        run: GOOS=windows GOARCH=amd64 go build -o dev-setup-manager.exe main.go
+
+      - name: Upload binaries as artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dev-setup-manager
-          path: dev-setup-manager
+          name: binaries
+          path: |
+            dev-setup-manager
+            dev-setup-manager-intel
+            dev-setup-manager-linux
+            dev-setup-manager.exe
+
+      - name: Create Release
+        uses: actions/create-release@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ inputs.version }}
+          notes: ${{ inputs.release-notes }}
+          files: binaries
