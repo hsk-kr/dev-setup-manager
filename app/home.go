@@ -13,6 +13,8 @@ func Home() {
 		Name: "Zshrc",
 	}, {
 		Name: "Dotfiles",
+	}, {
+		Name: "Guide",
 	},
 	}
 
@@ -36,6 +38,8 @@ func Home() {
 		case "Dotfiles":
 			tools.SetupDotfiles()
 			tools.SuccessMessage("Done dotfiles setup.\nCheck ~/dev-setup-manager/dotfiles.\nIf you already had the dotfiles before, it would be reinstalled.")
+		case "Guide":
+			Guide()
 		default:
 			NotSupported(choice)
 		}

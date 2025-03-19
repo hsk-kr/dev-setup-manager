@@ -8,7 +8,7 @@ import (
 func Install(app string) error {
 	switch app {
 	case "Homebrew":
-		ExecCommand("/bin/bash", "-c", "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash")
+		SuccessMessage(`You should install the homebrew manually. Use this command "/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)""`)
 	case "Git":
 		ExecCommand("brew", "install", "git")
 	case "WezTerm":
@@ -35,18 +35,15 @@ func Install(app string) error {
 		WarningMessage("Run source ~/.zshrc to use zsh-vi-mode without reopening the terminal.")
 	case "docker":
 		ExecCommand("brew", "install", "docker")
+	case "ruby":
+		ExecCommand("brew", "install", "ruby")
+	case "go":
+		ExecCommand("brew", "install", "go")
 	case "nvm":
 		ExecCommand("brew", "install", "nvm")
 		ExecCommand("mkdir", "-p", "~/.nvm")
 		AddZshSource("export NVM_DIR=\"$HOME/.nvm\"\n [ -s \"$HOMEBREW_PREFIX/opt/nvm/nvm.sh\" ] && \\. \"$HOMEBREW_PREFIX/opt/nvm/nvm.sh\"\n [ -s \"$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm\" ] && \\. \"$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm\"")
 		WarningMessage("Run source ~/.zshrc to use nvm without reopening the terminal.")
-	case "gvm":
-		ExecCommandWithIgnoreError("xcode-select", "--install")
-		ExecCommand("brew", "update")
-		ExecCommand("brew", "install", "mercurial")
-		ExecCommand("brew", "install", "bison")
-		ExecCommand("bash", "-c", "bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)")
-		WarningMessage("Follow the last instruction to complete gvm installation to use on this terminal session")
 	default:
 		return errors.New(fmt.Sprintf("Install does not support app:%s\n", app))
 	}
@@ -82,10 +79,12 @@ func IsInstalled(app string) (bool, error) {
 		return ExistBrewPackage("zsh-vi-mode"), nil
 	case "docker":
 		return ExistCommand("docker"), nil
+	case "ruby":
+		return ExistCommand("ruby"), nil
+	case "go":
+		return ExistCommand("go"), nil
 	case "nvm":
 		return ExistCommand("nvm"), nil
-	case "gvm":
-		return ExistCommand("gvm"), nil
 	default:
 		return false, errors.New(fmt.Sprintf("IsInstall does not support app:%s\n", app))
 	}

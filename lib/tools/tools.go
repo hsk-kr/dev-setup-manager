@@ -24,7 +24,7 @@ func RenderItem(name string, disabled bool) {
 }
 
 func ExistCommand(cmd string) bool {
-	_, err := exec.Command("which", cmd).Output()
+	_, err := exec.Command("zsh", "-l", "-c", fmt.Sprintf("which %s", cmd)).Output()
 
 	if err != nil {
 		return false
