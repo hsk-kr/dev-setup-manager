@@ -10,8 +10,6 @@ func Home() {
 	items := []terminal.SelectItem{{
 		Name: "Tools",
 	}, {
-		Name: "Zshrc",
-	}, {
 		Name: "Dotfiles",
 	}, {
 		Name: "Guide",
@@ -32,12 +30,9 @@ func Home() {
 			Tools()
 			display.DisplayHeader(true)
 			continue
-		case "Zshrc":
-			tools.SetupZshrc()
-			tools.SuccessMessage("Done .zshrc setup.\nCheck ~/dev-setup-manager/dev.zsh file.\nThe setup could have duplicated zsh as the setup's updated.")
 		case "Dotfiles":
 			tools.SetupDotfiles()
-			tools.SuccessMessage("Done dotfiles setup.\nCheck ~/dev-setup-manager/dotfiles.\nIf you already had the dotfiles before, it would be reinstalled.")
+			tools.SuccessMessage("Dotfiles setup complete.\n\n• Previous dotfiles have been deleted\n• New dotfiles installed in ~/dev-setup-manager/dotfiles\n• To apply zsh changes, run: source ~/.zshrc")
 		case "Guide":
 			Guide()
 		default:

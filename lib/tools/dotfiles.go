@@ -32,11 +32,16 @@ func SetupDotfiles() error {
 		"karabiner",
 		"nvim",
 		"tmux",
+		"zsh",
 	}
 
 	for _, copyItem := range copyItems {
 		ExecCommand("ln", "-s", fmt.Sprintf("%s/%s", devSetupManagerDotfilesPath, copyItem), fmt.Sprintf("%s/%s", configDirPath, copyItem))
 	}
+
+	ExecCommand("ln", "-s", fmt.Sprintf("%s/%s", devSetupManagerDotfilesPath, "scripts"), fmt.Sprintf("%s/%s", homePath, "scripts"))
+
+	AddZshSource(fmt.Sprintf("source %s/%s", configDirPath, "zsh/zshrc"))
 
 	return nil
 }
