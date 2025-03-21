@@ -1,11 +1,17 @@
 # Dev Setup Manager
 
+---
+
 ## Developed For
 
 |Category|Value|
 |---|---|
 |Device|Macnbook Air M1|
 |Shell|zsh|
+
+---
+
+## Features
 
 1. Tools
 
