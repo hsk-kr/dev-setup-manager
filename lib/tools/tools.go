@@ -71,20 +71,6 @@ func ExistApplication(appName string) bool {
 	return len(string(output)) >= len(appName)
 }
 
-func ExecCommandWithIgnoreError(command string, args ...string) {
-	cmd := exec.Command(command, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stdout
-
-	if err := cmd.Start(); err != nil {
-		return
-	}
-
-	if err := cmd.Wait(); err != nil {
-		return
-	}
-}
-
 func ExecCommand(command string, args ...string) {
 	cmd := exec.Command(command, args...)
 	cmd.Stdout = os.Stdout
