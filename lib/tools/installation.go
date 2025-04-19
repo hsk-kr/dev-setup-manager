@@ -34,7 +34,7 @@ func Install(app string) error {
 		AddZshSource("source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh")
 		WarningMessage("Run source ~/.zshrc to use zsh-vi-mode without reopening the terminal.")
 	case "docker":
-		ExecCommand("brew", "install", "docker")
+		ExecCommand("brew", "install", "--cask", "docker")
 	case "ruby":
 		ExecCommand("brew", "install", "ruby")
 	case "go":
