@@ -33,6 +33,7 @@ func SetupDotfiles() error {
 		"nvim",
 		"tmux",
 		"zsh",
+		"alacritty",
 	}
 
 	for _, copyItem := range copyItems {
