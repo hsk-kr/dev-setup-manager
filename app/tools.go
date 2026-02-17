@@ -69,7 +69,7 @@ func Tools() {
 
 	items := GetSelectItems()
 
-	// Initilaize item properties
+	// Initialize item properties
 	var wg sync.WaitGroup
 	for i := range items {
 		wg.Add(1)
@@ -83,7 +83,9 @@ func Tools() {
 			}
 			items[i].Disabled = items[i].GetDisabled()
 			items[i].Run = func() {
-				tools.Install(items[i].Name)
+				if err := tools.Install(items[i].Name); err != nil {
+					tools.WarningMessage(err.Error())
+				}
 			}
 		}()
 	}

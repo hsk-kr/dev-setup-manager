@@ -31,8 +31,11 @@ func Home() {
 			display.DisplayHeader(true)
 			continue
 		case "Dotfiles":
-			tools.SetupDotfiles()
-			tools.SuccessMessage("Dotfiles setup complete.\n\n• Previous dotfiles have been deleted\n• New dotfiles installed in ~/dev-setup-manager/dotfiles\n• To apply zsh changes, run: source ~/.zshrc")
+			if err := tools.SetupDotfiles(); err != nil {
+				tools.WarningMessage(err.Error())
+			} else {
+				tools.SuccessMessage("Dotfiles setup complete.\n\n• Previous dotfiles have been deleted\n• New dotfiles installed in ~/dev-setup-manager/dotfiles\n• To apply zsh changes, run: source ~/.zshrc")
+			}
 		case "Guide":
 			Guide()
 		default:
