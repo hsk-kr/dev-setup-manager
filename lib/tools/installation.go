@@ -62,10 +62,6 @@ func Install(app string) error {
 		if err := ExecCommand("brew", "install", "--cask", "docker"); err != nil {
 			return err
 		}
-	case "ruby":
-		if err := ExecCommand("brew", "install", "ruby"); err != nil {
-			return err
-		}
 	case "go":
 		if err := ExecCommand("brew", "install", "go"); err != nil {
 			return err
@@ -121,8 +117,6 @@ func IsInstalled(app string) (bool, error) {
 		return ExistBrewPackage("zsh-vi-mode"), nil
 	case "docker":
 		return ExistCommand("docker"), nil
-	case "ruby":
-		return ExistCommand("ruby"), nil
 	case "go":
 		return ExistCommand("go"), nil
 	case "nvm":

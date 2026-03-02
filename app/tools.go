@@ -51,9 +51,6 @@ func GetSelectItems() []terminal.SelectItem {
 			Name: "docker",
 		},
 		{
-			Name: "ruby",
-		},
-		{
 			Name: "go",
 		},
 		{
