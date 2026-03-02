@@ -56,6 +56,9 @@ func GetSelectItems() []terminal.SelectItem {
 		{
 			Name: "nvm",
 		},
+		{
+			Name: "btop",
+		},
 	}
 }
 
