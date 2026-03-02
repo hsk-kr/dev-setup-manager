@@ -1,7 +1,11 @@
 package app
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/hsk-kr/dev-setup-manager/lib/styles"
+)
 
 func NotSupported(command string) {
-	fmt.Printf("%s command is not supported yet\n", command)
+	fmt.Println(styles.ErrorText.Render(fmt.Sprintf("⚠ \"%s\" is not supported yet", command)))
 }

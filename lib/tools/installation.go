@@ -98,7 +98,7 @@ func IsInstalled(app string) (bool, error) {
 	case "Homebrew":
 		return ExistCommand("brew"), nil
 	case "Git":
-		return ExistBrewPackage("git"), nil
+		return ExistCommand("git"), nil
 	case "WezTerm":
 		return ExistApplication("WezTerm.app"), nil
 	case "Neovim":
@@ -124,7 +124,7 @@ func IsInstalled(app string) (bool, error) {
 	case "go":
 		return ExistCommand("go"), nil
 	case "nvm":
-		return ExistCommand("nvm"), nil
+		return ExistBrewPackage("nvm"), nil
 	case "btop":
 		return ExistCommand("btop"), nil
 	default:

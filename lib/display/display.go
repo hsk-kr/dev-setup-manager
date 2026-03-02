@@ -1,7 +1,9 @@
 package display
 
 import (
-	"github.com/fatih/color"
+	"fmt"
+
+	"github.com/hsk-kr/dev-setup-manager/lib/styles"
 	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
 )
 
@@ -9,11 +11,6 @@ func DisplayHeader(clearConsole bool) {
 	if clearConsole {
 		terminal.ClearConsole()
 	}
-	print := color.New(color.FgHiCyan).PrintlnFunc()
-
-	print("==============================")
-	print("|                            |")
-	print("|     Dev Setup Manager      |")
-	print("|                     hsk-kr |")
-	print("==============================")
+	header := styles.HeaderBox.Render("Dev Setup Manager\n                    hsk-kr")
+	fmt.Println(header)
 }

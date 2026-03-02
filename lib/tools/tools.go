@@ -8,19 +8,16 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/fatih/color"
+	"github.com/hsk-kr/dev-setup-manager/lib/styles"
 )
 
 func RenderItem(name string, disabled bool) {
-	installedPen := color.New(color.FgHiGreen).PrintFunc()
-	notInstalledPen := color.New(color.FgRed).PrintFunc()
-	softwareNamePen := color.New(color.FgWhite).PrintFunc()
-
-	softwareNamePen(name)
 	if disabled {
-		installedPen(" - Installed")
+		fmt.Print(styles.ItemNameDisabled.Render(name))
+		fmt.Print(styles.StatusInstalled.Render(" ✓ Installed"))
 	} else {
-		notInstalledPen(" - Not Installed")
+		fmt.Print(styles.ItemName.Render(name))
+		fmt.Print(styles.StatusNotInstalled.Render(" ✗ Not Installed"))
 	}
 }
 
@@ -183,11 +180,9 @@ func appendFile(path, content string) error {
 }
 
 func WarningMessage(message string) {
-	print := color.New(color.FgRed).PrintlnFunc()
-	print(message)
+	fmt.Println(styles.WarningBox.Render("⚠ " + message))
 }
 
 func SuccessMessage(message string) {
-	print := color.New(color.FgGreen).PrintlnFunc()
-	print(message)
+	fmt.Println(styles.SuccessBox.Render("✓ " + message))
 }
