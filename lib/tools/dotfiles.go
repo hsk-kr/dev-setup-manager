@@ -3,6 +3,7 @@ package tools
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func SetupDotfiles() error {
@@ -13,18 +14,27 @@ func SetupDotfiles() error {
 		return err
 	}
 
-	devSetupManagerHomePath := homePath + "/dev-setup-manager"
-	configDirPath := homePath + "/.config"
-	devSetupManagerDotfilesPath := devSetupManagerHomePath + "/dotfiles"
-	ExecCommand("mkdir", "-p", devSetupManagerHomePath)
+	devSetupManagerHomePath := filepath.Join(homePath, "dev-setup-manager")
+	configDirPath := filepath.Join(homePath, ".config")
+	devSetupManagerDotfilesPath := filepath.Join(devSetupManagerHomePath, "dotfiles")
 
-	if exist, _ := existFile(devSetupManagerDotfilesPath); exist {
-		ExecCommand("rm", "-rf", devSetupManagerDotfilesPath)
+	if err := ExecCommand("mkdir", "-p", devSetupManagerHomePath); err != nil {
+		return err
 	}
 
-	ExecCommand("git", "clone", "git@github.com:hsk-kr/dotfiles.git", devSetupManagerDotfilesPath)
+	if exist, _ := existFile(devSetupManagerDotfilesPath); exist {
+		if err := ExecCommand("rm", "-rf", devSetupManagerDotfilesPath); err != nil {
+			return err
+		}
+	}
 
-	ExecCommand("mkdir", "-p", configDirPath)
+	if err := ExecCommand("git", "clone", "git@github.com:hsk-kr/dotfiles.git", devSetupManagerDotfilesPath); err != nil {
+		return err
+	}
+
+	if err := ExecCommand("mkdir", "-p", configDirPath); err != nil {
+		return err
+	}
 
 	copyItems := []string{
 		"aerospace",
@@ -37,12 +47,14 @@ func SetupDotfiles() error {
 	}
 
 	for _, copyItem := range copyItems {
-		ExecCommand("ln", "-sfn", fmt.Sprintf("%s/%s", devSetupManagerDotfilesPath, copyItem), fmt.Sprintf("%s/%s", configDirPath, copyItem))
+		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, copyItem), filepath.Join(configDirPath, copyItem)); err != nil {
+			return err
+		}
 	}
 
-	ExecCommand("ln", "-sfn", fmt.Sprintf("%s/%s", devSetupManagerDotfilesPath, "scripts"), fmt.Sprintf("%s/%s", homePath, "scripts"))
+	if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, "scripts"), filepath.Join(homePath, "scripts")); err != nil {
+		return err
+	}
 
-	AddZshSource(fmt.Sprintf("source %s/%s", configDirPath, "zsh/zshrc"))
-
-	return nil
+	return AddZshSource(fmt.Sprintf("source %s", filepath.Join(configDirPath, "zsh", "zshrc")))
 }

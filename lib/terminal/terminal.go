@@ -84,12 +84,15 @@ func Select(items []SelectItem) (string, error) {
 
 	t, err := tty.Open()
 	if err != nil {
-		panic(err)
+		return "", fmt.Errorf("failed to open TTY: %w", err)
 	}
 	defer t.Close()
 
 	for {
-		r, _ := t.ReadRune()
+		r, err := t.ReadRune()
+		if err != nil {
+			return "", fmt.Errorf("failed to read input: %w", err)
+		}
 
 		switch r {
 		case '\x1b':

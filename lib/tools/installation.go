@@ -1,8 +1,9 @@
 package tools
 
 import (
-	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 )
 
 func Install(app string) error {
@@ -10,42 +11,79 @@ func Install(app string) error {
 	case "Homebrew":
 		SuccessMessage(`You should install the homebrew manually. Use this command "/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)""`)
 	case "Git":
-		ExecCommand("brew", "install", "git")
+		if err := ExecCommand("brew", "install", "git"); err != nil {
+			return err
+		}
 	case "WezTerm":
-		ExecCommand("brew", "install", "--cask", "wezterm")
+		if err := ExecCommand("brew", "install", "--cask", "wezterm"); err != nil {
+			return err
+		}
 	case "Neovim":
-		ExecCommand("brew", "install", "neovim")
+		if err := ExecCommand("brew", "install", "neovim"); err != nil {
+			return err
+		}
 	case "tmux":
-		ExecCommand("brew", "install", "tmux")
+		if err := ExecCommand("brew", "install", "tmux"); err != nil {
+			return err
+		}
 	case "AeroSpace":
-		ExecCommand("brew", "install", "--cask", "nikitabobko/tap/aerospace")
+		if err := ExecCommand("brew", "install", "--cask", "nikitabobko/tap/aerospace"); err != nil {
+			return err
+		}
 	case "Homerow":
-		ExecCommand("brew", "install", "--cask", "homerow")
+		if err := ExecCommand("brew", "install", "--cask", "homerow"); err != nil {
+			return err
+		}
 	case "Karabiner Elements":
-		ExecCommand("brew", "install", "--cask", "karabiner-elements")
+		if err := ExecCommand("brew", "install", "--cask", "karabiner-elements"); err != nil {
+			return err
+		}
 	case "Snipaste":
-		ExecCommand("brew", "install", "--cask", "snipaste")
+		if err := ExecCommand("brew", "install", "--cask", "snipaste"); err != nil {
+			return err
+		}
 	case "ripgrep":
-		ExecCommand("brew", "install", "ripgrep")
+		if err := ExecCommand("brew", "install", "ripgrep"); err != nil {
+			return err
+		}
 	case "fzf":
-		ExecCommand("brew", "install", "fzf")
+		if err := ExecCommand("brew", "install", "fzf"); err != nil {
+			return err
+		}
 	case "zsh-vi-mode":
-		ExecCommand("brew", "install", "zsh-vi-mode")
-		AddZshSource("source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh")
+		if err := ExecCommand("brew", "install", "zsh-vi-mode"); err != nil {
+			return err
+		}
+		if err := AddZshSource("source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh"); err != nil {
+			return err
+		}
 		WarningMessage("Run source ~/.zshrc to use zsh-vi-mode without reopening the terminal.")
 	case "docker":
-		ExecCommand("brew", "install", "--cask", "docker")
-	case "ruby":
-		ExecCommand("brew", "install", "ruby")
+		if err := ExecCommand("brew", "install", "--cask", "docker"); err != nil {
+			return err
+		}
 	case "go":
-		ExecCommand("brew", "install", "go")
+		if err := ExecCommand("brew", "install", "go"); err != nil {
+			return err
+		}
 	case "nvm":
-		ExecCommand("brew", "install", "nvm")
-		ExecCommand("mkdir", "-p", "~/.nvm")
-		AddZshSource("export NVM_DIR=\"$HOME/.nvm\"\n [ -s \"$HOMEBREW_PREFIX/opt/nvm/nvm.sh\" ] && \\. \"$HOMEBREW_PREFIX/opt/nvm/nvm.sh\"\n [ -s \"$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm\" ] && \\. \"$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm\"")
+		if err := ExecCommand("brew", "install", "nvm"); err != nil {
+			return err
+		}
+		homePath, err := os.UserHomeDir()
+		if err != nil {
+			return err
+		}
+		nvmDir := filepath.Join(homePath, ".nvm")
+		if err := os.MkdirAll(nvmDir, 0755); err != nil {
+			return err
+		}
+		if err := AddZshSource("export NVM_DIR=\"$HOME/.nvm\"\n [ -s \"$HOMEBREW_PREFIX/opt/nvm/nvm.sh\" ] && \\. \"$HOMEBREW_PREFIX/opt/nvm/nvm.sh\"\n [ -s \"$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm\" ] && \\. \"$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm\""); err != nil {
+			return err
+		}
 		WarningMessage("Run source ~/.zshrc to use nvm without reopening the terminal.")
 	default:
-		return errors.New(fmt.Sprintf("Install does not support app:%s\n", app))
+		return fmt.Errorf("Install does not support app:%s", app)
 	}
 
 	return nil
@@ -79,13 +117,11 @@ func IsInstalled(app string) (bool, error) {
 		return ExistBrewPackage("zsh-vi-mode"), nil
 	case "docker":
 		return ExistCommand("docker"), nil
-	case "ruby":
-		return ExistCommand("ruby"), nil
 	case "go":
 		return ExistCommand("go"), nil
 	case "nvm":
 		return ExistCommand("nvm"), nil
 	default:
-		return false, errors.New(fmt.Sprintf("IsInstall does not support app:%s\n", app))
+		return false, fmt.Errorf("IsInstall does not support app:%s", app)
 	}
 }
