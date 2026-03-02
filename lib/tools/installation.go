@@ -82,6 +82,10 @@ func Install(app string) error {
 			return err
 		}
 		WarningMessage("Run source ~/.zshrc to use nvm without reopening the terminal.")
+	case "btop":
+		if err := ExecCommand("brew", "install", "btop"); err != nil {
+			return err
+		}
 	default:
 		return fmt.Errorf("Install does not support app:%s", app)
 	}
@@ -121,6 +125,8 @@ func IsInstalled(app string) (bool, error) {
 		return ExistCommand("go"), nil
 	case "nvm":
 		return ExistCommand("nvm"), nil
+	case "btop":
+		return ExistCommand("btop"), nil
 	default:
 		return false, fmt.Errorf("IsInstall does not support app:%s", app)
 	}
