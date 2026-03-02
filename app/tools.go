@@ -1,10 +1,11 @@
 package app
 
 import (
+	"fmt"
 	"sync"
 
-	"github.com/fatih/color"
 	"github.com/hsk-kr/dev-setup-manager/lib/display"
+	"github.com/hsk-kr/dev-setup-manager/lib/styles"
 	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
 	"github.com/hsk-kr/dev-setup-manager/lib/tools"
 )
@@ -63,9 +64,7 @@ func GetSelectItems() []terminal.SelectItem {
 }
 
 func Tools() {
-	loadingPen := color.New(color.FgHiGreen).PrintfFunc()
-
-	loadingPen("Reading installed software...\n")
+	fmt.Println(styles.LoadingText.Render("Reading installed software..."))
 
 	items := GetSelectItems()
 
@@ -92,8 +91,7 @@ func Tools() {
 	wg.Wait()
 
 	display.DisplayHeader(true)
-	print := color.New(color.FgGreen).PrintlnFunc()
-	print("Select item you install")
+	fmt.Println(styles.SectionTitle.Render("Select a tool to install"))
 
 	for {
 		choice, err := terminal.Select(items)

@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/fatih/color"
+	"github.com/hsk-kr/dev-setup-manager/lib/styles"
 	"github.com/mattn/go-tty"
 )
 
@@ -51,32 +51,30 @@ Display items and returns the name of the item
 If user presses esc, it returns empty string with an error
 */
 func Select(items []SelectItem) (string, error) {
-	print := color.New(color.FgWhite).PrintfFunc()
-	cursor := color.New(color.FgGreen).Add(color.Bold).PrintFunc()
 	itemLength := len(items)
 	currentIndex := 0
 
 	for _, item := range items {
-		print("   ")
+		fmt.Printf("   ")
 
 		if item.Render != nil {
 			item.Render(item.Name, item.Disabled)
 		} else {
-			print(item.Name)
+			fmt.Printf("%s", item.Name)
 		}
 
-		print("\n")
+		fmt.Printf("\n")
 	}
 
 	eraseCurrentCursor := func() {
 		MoveCursor(1, -itemLength+currentIndex)
-		cursor(" ")
+		fmt.Print(" ")
 		MoveCursor(1, -(-itemLength + currentIndex))
 	}
 
 	drawCurrentCursor := func() {
 		MoveCursor(1, -itemLength+currentIndex)
-		cursor(">")
+		fmt.Print(styles.Cursor.Render("❯"))
 		MoveCursor(1, -(-itemLength + currentIndex))
 	}
 
