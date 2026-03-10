@@ -56,5 +56,13 @@ func SetupDotfiles() error {
 		return err
 	}
 
+	claudeDirPath := filepath.Join(homePath, ".claude")
+	if err := ExecCommand("mkdir", "-p", claudeDirPath); err != nil {
+		return err
+	}
+	if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, "claude", "skills"), filepath.Join(claudeDirPath, "skills")); err != nil {
+		return err
+	}
+
 	return AddZshSource(fmt.Sprintf("source %s", filepath.Join(configDirPath, "zsh", "zshrc")))
 }
