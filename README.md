@@ -104,9 +104,15 @@ tools:
 
 ## Usage
 
-### From Release
+### Quick Install
 
-Download the latest binary from [Releases](https://github.com/hsk-kr/dev-setup-manager/releases) and run it.
+Copy and paste this into your terminal after a fresh reset:
+
+```bash
+curl -sL https://raw.githubusercontent.com/hsk-kr/dev-setup-manager/main/install.sh | bash
+```
+
+This downloads the latest release, removes the macOS quarantine flag, and runs it.
 
 ### From Source
 
