@@ -63,6 +63,22 @@ func ExecCommand(command string, args ...string) error {
 	return nil
 }
 
+// ExecCommandQuiet runs a command without printing stdout/stderr.
+// Used when a spinner is showing progress instead.
+func ExecCommandQuiet(command string, args ...string) error {
+	cmd := exec.Command(command, args...)
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("failed to start %s: %w", command, err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return fmt.Errorf("%s failed: %w", command, err)
+	}
+
+	return nil
+}
+
 /*
 Add the source to ~/dev-setup-manager/dev.zsh
 

@@ -1,12 +1,13 @@
 package app
 
 import (
+	"github.com/hsk-kr/dev-setup-manager/lib/config"
 	"github.com/hsk-kr/dev-setup-manager/lib/display"
 	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
 	"github.com/hsk-kr/dev-setup-manager/lib/tools"
 )
 
-func Home() {
+func Home(cfg *config.Config) {
 	items := []terminal.SelectItem{{
 		Name: "Tools",
 	}, {
@@ -27,11 +28,11 @@ func Home() {
 
 		switch choice {
 		case "Tools":
-			Tools()
+			Tools(cfg)
 			display.DisplayHeader(true)
 			continue
 		case "Dotfiles":
-			if err := tools.SetupDotfiles(); err != nil {
+			if err := tools.SetupDotfiles(cfg.Dotfiles); err != nil {
 				tools.WarningMessage(err.Error())
 			} else {
 				tools.SuccessMessage("Dotfiles setup complete.\n\n• Previous dotfiles have been deleted\n• New dotfiles installed in ~/dev-setup-manager/dotfiles\n• To apply zsh changes, run: source ~/.zshrc")

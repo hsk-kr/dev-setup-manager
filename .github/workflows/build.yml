@@ -1,12 +1,9 @@
 name: Build and Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version number"
-        required: true
-        default: "v0.1.0"
+  push:
+    tags:
+      - "v*"
 
 jobs:
   build-and-release:
@@ -15,8 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -37,4 +32,4 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "dev-setup-manager"
-          tag: ${{ inputs.version }}
+          tag: ${{ github.ref_name }}

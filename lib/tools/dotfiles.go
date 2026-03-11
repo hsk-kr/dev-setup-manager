@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/hsk-kr/dev-setup-manager/lib/config"
+	"github.com/hsk-kr/dev-setup-manager/lib/spinner"
 )
 
-func SetupDotfiles() error {
+func SetupDotfiles(dotCfg config.DotfilesConfig) error {
 	homePath, err := os.UserHomeDir()
-
 	if err != nil {
 		WarningMessage(err.Error())
 		return err
@@ -28,7 +30,11 @@ func SetupDotfiles() error {
 		}
 	}
 
-	if err := ExecCommand("git", "clone", "git@github.com:hsk-kr/dotfiles.git", devSetupManagerDotfilesPath); err != nil {
+	sp := spinner.New("Cloning dotfiles...")
+	sp.Start()
+	err = ExecCommandQuiet("git", "clone", dotCfg.Repo, devSetupManagerDotfilesPath)
+	sp.Stop()
+	if err != nil {
 		return err
 	}
 
@@ -36,33 +42,39 @@ func SetupDotfiles() error {
 		return err
 	}
 
-	copyItems := []string{
-		"aerospace",
-		"devdeck",
-		"karabiner",
-		"nvim",
-		"tmux",
-		"zsh",
-		"alacritty",
-	}
-
-	for _, copyItem := range copyItems {
-		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, copyItem), filepath.Join(configDirPath, copyItem)); err != nil {
+	// Symlink config directories
+	for _, item := range dotCfg.ConfigLinks {
+		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, item), filepath.Join(configDirPath, item)); err != nil {
 			return err
 		}
 	}
 
-	if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, "scripts"), filepath.Join(homePath, "scripts")); err != nil {
-		return err
+	// Symlink home directories
+	for source, target := range dotCfg.HomeLinks {
+		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, source), filepath.Join(homePath, target)); err != nil {
+			return err
+		}
 	}
 
-	claudeDirPath := filepath.Join(homePath, ".claude")
-	if err := ExecCommand("mkdir", "-p", claudeDirPath); err != nil {
-		return err
-	}
-	if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, "claude", "skills"), filepath.Join(claudeDirPath, "skills")); err != nil {
-		return err
+	// Extra links (e.g., claude/skills -> ~/.claude/skills)
+	for _, link := range dotCfg.ExtraLinks {
+		targetPath := config.ExpandPath(link.Target)
+		targetDir := filepath.Dir(targetPath)
+		if err := ExecCommand("mkdir", "-p", targetDir); err != nil {
+			return err
+		}
+		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, link.Source), targetPath); err != nil {
+			return err
+		}
 	}
 
-	return AddZshSource(fmt.Sprintf("source %s", filepath.Join(configDirPath, "zsh", "zshrc")))
+	// Add zsh source
+	if dotCfg.ZshSource != "" {
+		zshSource := dotCfg.ZshSource
+		// Expand ~ in the source path
+		zshSource = config.ExpandPath(zshSource)
+		return AddZshSource(fmt.Sprintf("source %s", zshSource))
+	}
+
+	return nil
 }

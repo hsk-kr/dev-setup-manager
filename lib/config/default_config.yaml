@@ -1,0 +1,122 @@
+dotfiles:
+  repo: "git@github.com:hsk-kr/dotfiles.git"
+  config_links:
+    - aerospace
+    - devdeck
+    - karabiner
+    - nvim
+    - tmux
+    - zsh
+    - alacritty
+  home_links:
+    scripts: scripts
+  extra_links:
+    - source: claude/skills
+      target: ~/.claude/skills
+  zsh_source: "~/.config/zsh/zshrc"
+
+tools:
+  - name: Homebrew
+    install_type: manual
+    manual_message: 'You should install the homebrew manually. Use this command "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""'
+    detect_type: command
+    detect_value: brew
+
+  - name: Git
+    install_type: brew
+    package: git
+    detect_type: command
+    detect_value: git
+
+  - name: WezTerm
+    install_type: cask
+    package: wezterm
+    detect_type: application
+    detect_value: WezTerm.app
+
+  - name: Neovim
+    install_type: brew
+    package: neovim
+    detect_type: command
+    detect_value: nvim
+
+  - name: tmux
+    install_type: brew
+    package: tmux
+    detect_type: command
+    detect_value: tmux
+
+  - name: AeroSpace
+    install_type: cask
+    package: nikitabobko/tap/aerospace
+    detect_type: application
+    detect_value: AeroSpace.app
+
+  - name: Homerow
+    install_type: cask
+    package: homerow
+    detect_type: application
+    detect_value: Homerow.app
+
+  - name: Karabiner Elements
+    install_type: cask
+    package: karabiner-elements
+    detect_type: application
+    detect_value: Karabiner-Elements.app
+
+  - name: Snipaste
+    install_type: cask
+    package: snipaste
+    detect_type: application
+    detect_value: Snipaste.app
+
+  - name: ripgrep
+    install_type: brew
+    package: ripgrep
+    detect_type: command
+    detect_value: rg
+
+  - name: fzf
+    install_type: brew
+    package: fzf
+    detect_type: command
+    detect_value: fzf
+
+  - name: zsh-vi-mode
+    install_type: brew
+    package: zsh-vi-mode
+    detect_type: brew_package
+    detect_value: zsh-vi-mode
+    zsh_source: "source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+    post_install_warning: "Run source ~/.zshrc to use zsh-vi-mode without reopening the terminal."
+
+  - name: docker
+    install_type: cask
+    package: docker
+    detect_type: command
+    detect_value: docker
+
+  - name: go
+    install_type: brew
+    package: go
+    detect_type: command
+    detect_value: go
+
+  - name: nvm
+    install_type: brew
+    package: nvm
+    detect_type: brew_package
+    detect_value: nvm
+    zsh_source: |-
+      export NVM_DIR="$HOME/.nvm"
+       [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+       [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
+    post_install_warning: "Run source ~/.zshrc to use nvm without reopening the terminal."
+    post_install_dirs:
+      - ~/.nvm
+
+  - name: btop
+    install_type: brew
+    package: btop
+    detect_type: command
+    detect_value: btop

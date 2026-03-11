@@ -4,69 +4,20 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/hsk-kr/dev-setup-manager/lib/config"
 	"github.com/hsk-kr/dev-setup-manager/lib/display"
 	"github.com/hsk-kr/dev-setup-manager/lib/styles"
 	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
 	"github.com/hsk-kr/dev-setup-manager/lib/tools"
 )
 
-func GetSelectItems() []terminal.SelectItem {
-	return []terminal.SelectItem{
-		{
-			Name: "Homebrew",
-		},
-		{
-			Name: "Git",
-		},
-		{
-			Name: "WezTerm",
-		},
-		{
-			Name: "Neovim",
-		},
-		{
-			Name: "tmux",
-		},
-		{
-			Name: "AeroSpace",
-		},
-		{
-			Name: "Homerow",
-		},
-		{
-			Name: "Karabiner Elements",
-		},
-		{
-			Name: "Snipaste",
-		},
-		{
-			Name: "ripgrep",
-		},
-		{
-			Name: "fzf",
-		},
-		{
-			Name: "zsh-vi-mode",
-		},
-		{
-			Name: "docker",
-		},
-		{
-			Name: "go",
-		},
-		{
-			Name: "nvm",
-		},
-		{
-			Name: "btop",
-		},
-	}
-}
-
-func Tools() {
+func Tools(cfg *config.Config) {
 	fmt.Println(styles.LoadingText.Render("Reading installed software..."))
 
-	items := GetSelectItems()
+	items := make([]terminal.SelectItem, len(cfg.Tools))
+	for i, t := range cfg.Tools {
+		items[i] = terminal.SelectItem{Name: t.Name}
+	}
 
 	// Initialize item properties
 	var wg sync.WaitGroup
@@ -75,14 +26,15 @@ func Tools() {
 
 		go func() {
 			defer wg.Done()
+			toolCfg := cfg.Tools[i]
 			items[i].Render = tools.RenderItem
 			items[i].GetDisabled = func() bool {
-				installed, _ := tools.IsInstalled(items[i].Name)
+				installed, _ := tools.IsInstalled(toolCfg)
 				return installed
 			}
 			items[i].Disabled = items[i].GetDisabled()
 			items[i].Run = func() {
-				if err := tools.Install(items[i].Name); err != nil {
+				if err := tools.Install(toolCfg); err != nil {
 					tools.WarningMessage(err.Error())
 				}
 			}
