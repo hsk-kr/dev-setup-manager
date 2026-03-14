@@ -21,6 +21,8 @@ dotfiles:
       target: ~/.claude/docs
     - source: claude/settings.json
       target: ~/.claude/settings.json
+    - source: claude/CLAUDE.md
+      target: ~/.claude/CLAUDE.md
   post_scripts:
     - claude/memory/sync-memories.sh
   zsh_source: "~/.config/zsh/zshrc"
