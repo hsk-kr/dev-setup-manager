@@ -8,6 +8,7 @@ dotfiles:
     - tmux
     - zsh
     - alacritty
+    - ghostty
   home_links:
     scripts: scripts
   extra_links:
@@ -126,6 +127,12 @@ tools:
     post_install_warning: "Run source ~/.zshrc to use nvm without reopening the terminal."
     post_install_dirs:
       - ~/.nvm
+
+  - name: Ghostty
+    install_type: cask
+    package: ghostty
+    detect_type: application
+    detect_value: Ghostty.app
 
   - name: btop
     install_type: brew

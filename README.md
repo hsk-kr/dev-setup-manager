@@ -44,7 +44,7 @@ Default tools included:
 Clones a dotfiles repository and creates symlinks under `~/.config`. The repo URL is configurable via the YAML config file (defaults to [hsk-kr/dotfiles](https://github.com/hsk-kr/dotfiles)).
 
 Default symlinks:
-- Config directories: aerospace, devdeck, karabiner, nvim, tmux, zsh, alacritty
+- Config directories: aerospace, devdeck, karabiner, nvim, tmux, zsh, alacritty, ghostty
 - Scripts directory (`~/scripts`)
 - Claude Code skills (`~/.claude/skills`)
 - Zsh configuration sourced from `~/.zshrc`

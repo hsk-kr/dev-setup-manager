@@ -95,9 +95,9 @@ func TestLoad_DefaultConfig_ToolCount(t *testing.T) {
 		t.Fatalf("Load() error: %v", err)
 	}
 
-	// Default config should have 16 tools
-	if len(cfg.Tools) != 16 {
-		t.Errorf("expected 16 tools, got %d", len(cfg.Tools))
+	// Default config should have 17 tools
+	if len(cfg.Tools) != 17 {
+		t.Errorf("expected 17 tools, got %d", len(cfg.Tools))
 	}
 }
 
@@ -107,7 +107,7 @@ func TestLoad_DefaultConfig_DotfilesConfigLinks(t *testing.T) {
 		t.Fatalf("Load() error: %v", err)
 	}
 
-	expectedLinks := []string{"aerospace", "devdeck", "karabiner", "nvim", "tmux", "zsh", "alacritty"}
+	expectedLinks := []string{"aerospace", "devdeck", "karabiner", "nvim", "tmux", "zsh", "alacritty", "ghostty"}
 	if len(cfg.Dotfiles.ConfigLinks) != len(expectedLinks) {
 		t.Errorf("expected %d config links, got %d", len(expectedLinks), len(cfg.Dotfiles.ConfigLinks))
 	}
