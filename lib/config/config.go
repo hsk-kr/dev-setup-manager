@@ -23,6 +23,7 @@ type DotfilesConfig struct {
 	HomeLinks   map[string]string `yaml:"home_links"`
 	ExtraLinks  []ExtraLink       `yaml:"extra_links"`
 	ZshSource   string            `yaml:"zsh_source"`
+	PostScripts []string          `yaml:"post_scripts"`
 }
 
 type ToolConfig struct {

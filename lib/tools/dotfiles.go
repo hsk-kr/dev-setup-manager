@@ -68,6 +68,18 @@ func SetupDotfiles(dotCfg config.DotfilesConfig) error {
 		}
 	}
 
+	// Run post-setup scripts
+	for _, script := range dotCfg.PostScripts {
+		scriptPath := filepath.Join(devSetupManagerDotfilesPath, script)
+		sp := spinner.New(fmt.Sprintf("Running %s...", script))
+		sp.Start()
+		err := ExecCommandQuiet("bash", scriptPath)
+		sp.Stop()
+		if err != nil {
+			WarningMessage(fmt.Sprintf("Post script %s failed: %s", script, err.Error()))
+		}
+	}
+
 	// Add zsh source
 	if dotCfg.ZshSource != "" {
 		zshSource := dotCfg.ZshSource
