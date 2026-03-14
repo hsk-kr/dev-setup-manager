@@ -44,7 +44,14 @@ func SetupDotfiles(dotCfg config.DotfilesConfig) error {
 
 	// Symlink config directories
 	for _, item := range dotCfg.ConfigLinks {
-		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, item), filepath.Join(configDirPath, item)); err != nil {
+		target := filepath.Join(configDirPath, item)
+		// Remove existing directory (not symlink) so ln doesn't create a link inside it
+		if info, err := os.Lstat(target); err == nil && info.IsDir() && info.Mode()&os.ModeSymlink == 0 {
+			if err := os.RemoveAll(target); err != nil {
+				return err
+			}
+		}
+		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, item), target); err != nil {
 			return err
 		}
 	}
