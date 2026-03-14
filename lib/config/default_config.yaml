@@ -13,6 +13,14 @@ dotfiles:
   extra_links:
     - source: claude/skills
       target: ~/.claude/skills
+    - source: claude/agents
+      target: ~/.claude/agents
+    - source: claude/commands
+      target: ~/.claude/commands
+    - source: claude/docs
+      target: ~/.claude/docs
+    - source: claude/settings.json
+      target: ~/.claude/settings.json
   zsh_source: "~/.config/zsh/zshrc"
 
 tools:
