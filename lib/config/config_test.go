@@ -107,7 +107,7 @@ func TestLoad_DefaultConfig_DotfilesConfigLinks(t *testing.T) {
 		t.Fatalf("Load() error: %v", err)
 	}
 
-	expectedLinks := []string{"aerospace", "devdeck", "karabiner", "nvim", "tmux", "zsh", "alacritty", "ghostty"}
+	expectedLinks := []string{"aerospace", "devdeck", "karabiner", "neru", "nvim", "tmux", "zsh", "alacritty", "ghostty"}
 	if len(cfg.Dotfiles.ConfigLinks) != len(expectedLinks) {
 		t.Errorf("expected %d config links, got %d", len(expectedLinks), len(cfg.Dotfiles.ConfigLinks))
 	}

@@ -4,6 +4,7 @@ dotfiles:
     - aerospace
     - devdeck
     - karabiner
+    - neru
     - nvim
     - tmux
     - zsh
@@ -67,11 +68,11 @@ tools:
     detect_type: application
     detect_value: AeroSpace.app
 
-  - name: Homerow
+  - name: Neru
     install_type: cask
-    package: homerow
+    package: y3owk1n/tap/neru
     detect_type: application
-    detect_value: Homerow.app
+    detect_value: Neru.app
 
   - name: Karabiner Elements
     install_type: cask
