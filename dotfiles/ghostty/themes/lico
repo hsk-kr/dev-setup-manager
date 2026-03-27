@@ -1,0 +1,31 @@
+# Hacker — dark, muted, readable
+# A cracker-aesthetic theme with practical readability
+
+background = #0a0e14
+foreground = #a8b5c1
+
+cursor-color = #4caf50
+cursor-text = #0a0e14
+
+selection-background = #1a3326
+selection-foreground = #c8d3dc
+
+# Normal colors
+palette = 0=#0a0e14
+palette = 1=#b55a5a
+palette = 2=#3d9970
+palette = 3=#d4a017
+palette = 4=#4a7fa5
+palette = 5=#8a6aad
+palette = 6=#2e9688
+palette = 7=#8a95a0
+
+# Bright colors
+palette = 8=#3e4b59
+palette = 9=#c97070
+palette = 10=#5ab88a
+palette = 11=#e0b840
+palette = 12=#6a9fc0
+palette = 13=#a380c4
+palette = 14=#45b5a5
+palette = 15=#c8d3dc

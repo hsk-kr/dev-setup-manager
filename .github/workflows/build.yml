@@ -19,17 +19,17 @@ jobs:
           go-version: '1.24'
 
       - name: Build for macOS (M1)
-        run: GOOS=darwin GOARCH=arm64 go build -o dev-setup-manager main.go
+        run: GOOS=darwin GOARCH=arm64 go build -o licokit main.go
 
       - name: Upload binaries as artifacts
         uses: actions/upload-artifact@v4
         with:
           name: binaries
           path: |
-            dev-setup-manager
+            licokit
 
       - name: Create a Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dev-setup-manager"
+          artifacts: "licokit"
           tag: ${{ github.ref_name }}

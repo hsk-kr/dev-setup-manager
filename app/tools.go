@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/hsk-kr/dev-setup-manager/lib/config"
-	"github.com/hsk-kr/dev-setup-manager/lib/display"
-	"github.com/hsk-kr/dev-setup-manager/lib/styles"
-	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
-	"github.com/hsk-kr/dev-setup-manager/lib/tools"
+	"github.com/hsk-kr/licokit/lib/config"
+	"github.com/hsk-kr/licokit/lib/display"
+	"github.com/hsk-kr/licokit/lib/styles"
+	"github.com/hsk-kr/licokit/lib/terminal"
+	"github.com/hsk-kr/licokit/lib/tools"
 )
 
 func Tools(cfg *config.Config) {

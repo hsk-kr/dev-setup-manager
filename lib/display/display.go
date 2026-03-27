@@ -3,14 +3,14 @@ package display
 import (
 	"fmt"
 
-	"github.com/hsk-kr/dev-setup-manager/lib/styles"
-	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
+	"github.com/hsk-kr/licokit/lib/styles"
+	"github.com/hsk-kr/licokit/lib/terminal"
 )
 
 func DisplayHeader(clearConsole bool) {
 	if clearConsole {
 		terminal.ClearConsole()
 	}
-	header := styles.HeaderBox.Render("Dev Setup Manager\n                    hsk-kr")
+	header := styles.HeaderBox.Render("licokit\n          lico's dev loadout")
 	fmt.Println(header)
 }

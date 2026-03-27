@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hsk-kr/dev-setup-manager/lib/styles"
+	"github.com/hsk-kr/licokit/lib/styles"
 )
 
 func RenderItem(name string, disabled bool) {
@@ -80,7 +80,7 @@ func ExecCommandQuiet(command string, args ...string) error {
 }
 
 /*
-Add the source to ~/dev-setup-manager/dev.zsh
+Add the source to ~/licokit/dev.zsh
 
 It will insert the line to import dev.zsh from .zshrc if it's not setup.
 
@@ -94,23 +94,23 @@ func AddZshSource(source string) error {
 		return err
 	}
 
-	devSetupManagerHomePath := filepath.Join(homePath, "dev-setup-manager")
-	devSetupManagerZshPath := filepath.Join(devSetupManagerHomePath, "dev.zsh")
+	licokitHomePath := filepath.Join(homePath, "licokit")
+	licokitZshPath := filepath.Join(licokitHomePath, "dev.zsh")
 	zshrcPath := filepath.Join(homePath, ".zshrc")
-	if err := ExecCommand("mkdir", "-p", devSetupManagerHomePath); err != nil {
+	if err := ExecCommand("mkdir", "-p", licokitHomePath); err != nil {
 		return err
 	}
 
 	// add source into dev.zsh. if it's already setup, it does nothing
 	addSourceToDevZsh := func() error {
-		exist, err := existFile(devSetupManagerZshPath)
+		exist, err := existFile(licokitZshPath)
 
 		if err != nil {
 			return err
 		}
 
 		if exist {
-			contains, err := containInFile(devSetupManagerZshPath, source)
+			contains, err := containInFile(licokitZshPath, source)
 
 			if err != nil {
 				return err
@@ -121,7 +121,7 @@ func AddZshSource(source string) error {
 			}
 		}
 
-		err = appendFile(devSetupManagerZshPath, fmt.Sprintf("\n%s", source))
+		err = appendFile(licokitZshPath, fmt.Sprintf("\n%s", source))
 		return err
 	}
 
@@ -134,7 +134,7 @@ func AddZshSource(source string) error {
 		}
 
 		if exist {
-			contains, err := containInFile(zshrcPath, devSetupManagerZshPath)
+			contains, err := containInFile(zshrcPath, licokitZshPath)
 
 			if err != nil {
 				return err
@@ -145,7 +145,7 @@ func AddZshSource(source string) error {
 			}
 		}
 
-		err = appendFile(zshrcPath, fmt.Sprintf("\nsource %s", devSetupManagerZshPath))
+		err = appendFile(zshrcPath, fmt.Sprintf("\nsource %s", licokitZshPath))
 		return err
 	}
 

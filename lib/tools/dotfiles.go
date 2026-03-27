@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/hsk-kr/dev-setup-manager/lib/config"
-	"github.com/hsk-kr/dev-setup-manager/lib/spinner"
+	"github.com/hsk-kr/licokit/lib/config"
+	"github.com/hsk-kr/licokit/lib/spinner"
 )
 
 func SetupDotfiles(dotCfg config.DotfilesConfig) error {
@@ -16,26 +16,17 @@ func SetupDotfiles(dotCfg config.DotfilesConfig) error {
 		return err
 	}
 
-	devSetupManagerHomePath := filepath.Join(homePath, "dev-setup-manager")
+	licokitHomePath := filepath.Join(homePath, "licokit")
 	configDirPath := filepath.Join(homePath, ".config")
-	devSetupManagerDotfilesPath := filepath.Join(devSetupManagerHomePath, "dotfiles")
+	dotfilesPath := filepath.Join(licokitHomePath, "dotfiles")
 
-	if err := ExecCommand("mkdir", "-p", devSetupManagerHomePath); err != nil {
-		return err
-	}
-
-	if exist, _ := existFile(devSetupManagerDotfilesPath); exist {
-		if err := ExecCommand("rm", "-rf", devSetupManagerDotfilesPath); err != nil {
-			return err
-		}
-	}
-
-	sp := spinner.New("Cloning dotfiles...")
+	// Pull latest changes (dotfiles are part of this repo)
+	sp := spinner.New("Updating licokit...")
 	sp.Start()
-	err = ExecCommandQuiet("git", "clone", dotCfg.Repo, devSetupManagerDotfilesPath)
+	err = ExecCommandQuiet("git", "-C", licokitHomePath, "pull", "--ff-only")
 	sp.Stop()
 	if err != nil {
-		return err
+		WarningMessage(fmt.Sprintf("git pull failed (offline?): %s", err.Error()))
 	}
 
 	if err := ExecCommand("mkdir", "-p", configDirPath); err != nil {
@@ -51,14 +42,14 @@ func SetupDotfiles(dotCfg config.DotfilesConfig) error {
 				return err
 			}
 		}
-		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, item), target); err != nil {
+		if err := ExecCommand("ln", "-sfn", filepath.Join(dotfilesPath, item), target); err != nil {
 			return err
 		}
 	}
 
 	// Symlink home directories
 	for source, target := range dotCfg.HomeLinks {
-		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, source), filepath.Join(homePath, target)); err != nil {
+		if err := ExecCommand("ln", "-sfn", filepath.Join(dotfilesPath, source), filepath.Join(homePath, target)); err != nil {
 			return err
 		}
 	}
@@ -70,14 +61,14 @@ func SetupDotfiles(dotCfg config.DotfilesConfig) error {
 		if err := ExecCommand("mkdir", "-p", targetDir); err != nil {
 			return err
 		}
-		if err := ExecCommand("ln", "-sfn", filepath.Join(devSetupManagerDotfilesPath, link.Source), targetPath); err != nil {
+		if err := ExecCommand("ln", "-sfn", filepath.Join(dotfilesPath, link.Source), targetPath); err != nil {
 			return err
 		}
 	}
 
 	// Run post-setup scripts
 	for _, script := range dotCfg.PostScripts {
-		scriptPath := filepath.Join(devSetupManagerDotfilesPath, script)
+		scriptPath := filepath.Join(dotfilesPath, script)
 		sp := spinner.New(fmt.Sprintf("Running %s...", script))
 		sp.Start()
 		err := ExecCommandQuiet("bash", scriptPath)

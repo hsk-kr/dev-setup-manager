@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hsk-kr/dev-setup-manager/lib/styles"
+	"github.com/hsk-kr/licokit/lib/styles"
 )
 
 var frames = []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}

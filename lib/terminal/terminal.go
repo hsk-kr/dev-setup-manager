@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/hsk-kr/dev-setup-manager/lib/styles"
+	"github.com/hsk-kr/licokit/lib/styles"
 	"github.com/mattn/go-tty"
 )
 

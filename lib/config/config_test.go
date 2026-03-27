@@ -64,8 +64,8 @@ func TestLoad_DefaultConfig(t *testing.T) {
 		t.Fatalf("Load() error: %v", err)
 	}
 
-	if cfg.Dotfiles.Repo == "" {
-		t.Error("Dotfiles.Repo should not be empty")
+	if len(cfg.Dotfiles.ConfigLinks) == 0 {
+		t.Error("Dotfiles.ConfigLinks should not be empty")
 	}
 
 	if len(cfg.Tools) == 0 {
@@ -122,7 +122,7 @@ func TestLoad_DefaultConfig_DotfilesConfigLinks(t *testing.T) {
 func TestLoad_UserConfig(t *testing.T) {
 	// Create a temporary user config
 	tmpDir := t.TempDir()
-	configDir := filepath.Join(tmpDir, ".config", "dev-setup-manager")
+	configDir := filepath.Join(tmpDir, ".config", "licokit")
 	if err := os.MkdirAll(configDir, 0755); err != nil {
 		t.Fatal(err)
 	}

@@ -57,10 +57,10 @@ type Config struct {
 // Load reads the config from the user config path if it exists,
 // otherwise falls back to the embedded default config.
 func Load() (*Config, error) {
-	// Check for user config at ~/.config/dev-setup-manager/config.yaml
+	// Check for user config at ~/.config/licokit/config.yaml
 	homePath, err := os.UserHomeDir()
 	if err == nil {
-		userConfigPath := filepath.Join(homePath, ".config", "dev-setup-manager", "config.yaml")
+		userConfigPath := filepath.Join(homePath, ".config", "licokit", "config.yaml")
 		if data, err := os.ReadFile(userConfigPath); err == nil {
 			var cfg Config
 			if err := yaml.Unmarshal(data, &cfg); err != nil {

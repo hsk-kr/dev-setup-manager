@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 
-	"github.com/hsk-kr/dev-setup-manager/lib/styles"
+	"github.com/hsk-kr/licokit/lib/styles"
 )
 
 func NotSupported(command string) {

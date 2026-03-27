@@ -1,4 +1,4 @@
-module github.com/hsk-kr/dev-setup-manager
+module github.com/hsk-kr/licokit
 
 go 1.23.1
 

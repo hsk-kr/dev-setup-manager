@@ -1,0 +1,41 @@
+[hotkeys]
+"Cmd+Shift+Space" = "hints"
+"Cmd+Shift+G" = "grid"
+"Cmd+Shift+C" = "recursive_grid"
+"Cmd+Shift+S" = "scroll"
+
+[hints]
+auto_exit_actions = []
+hint_characters = "asdfghjkl"
+max_depth = 50
+parallel_threshold = 10
+include_menubar_hints = true
+additional_menubar_hints_targets = [
+    "com.apple.TextInputMenuAgent",
+    "com.apple.controlcenter",
+    "com.apple.systemuiserver",
+]
+include_dock_hints = false
+include_nc_hints = false
+include_stage_manager_hints = false
+detect_mission_control = false
+ignore_clickable_check = true
+
+[hints.additional_ax_support]
+enable = true
+
+[hints.ui]
+font_size = 11
+font_family = "JetBrains Mono"
+border_radius = 3
+border_width = 1
+padding_x = 4
+padding_y = 2
+background_color_dark = "#E6161B22"
+text_color_dark = "#FF00FF9F"
+matched_text_color_dark = "#FF005F3F"
+border_color_dark = "#CC00FF9F"
+background_color_light = "#E6161B22"
+text_color_light = "#FF00FF9F"
+matched_text_color_light = "#FF005F3F"
+border_color_light = "#CC00FF9F"

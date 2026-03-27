@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/hsk-kr/dev-setup-manager/lib/config"
-	"github.com/hsk-kr/dev-setup-manager/lib/spinner"
+	"github.com/hsk-kr/licokit/lib/config"
+	"github.com/hsk-kr/licokit/lib/spinner"
 )
 
 func Install(tool config.ToolConfig) error {

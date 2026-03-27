@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hsk-kr/dev-setup-manager/app"
-	"github.com/hsk-kr/dev-setup-manager/lib/config"
-	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
+	"github.com/hsk-kr/licokit/app"
+	"github.com/hsk-kr/licokit/lib/config"
+	"github.com/hsk-kr/licokit/lib/terminal"
 )
 
 func main() {

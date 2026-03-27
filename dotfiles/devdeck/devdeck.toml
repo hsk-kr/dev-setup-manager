@@ -1,0 +1,180 @@
+[layout]
+columns=6
+background_color="#121212"
+
+[[commands]]
+app = "lock"
+description = "lock"
+icon = "lock-closed-outline"
+action = "lock"
+type = "action"
+main = true
+
+[[commands]]
+app = "ctrl+c"
+description = "ctrl+c"
+icon = "exit-outline"
+action = "ctrl-c"
+type = "action"
+main = true
+
+[[commands]]
+app = "Terminal"
+description = "Terminal"
+icon="terminal-outline"
+action = "open"
+type = "action"
+main = true
+
+[[commands]]
+app = "Slack"
+description = "Slack"
+icon="logo-slack"
+action = "open"
+type = "action"
+main = true
+
+[[commands]]
+app = "terminal.clear"
+description = "terminal.clear"
+action = "terminal.clear"
+type = "action"
+main = true
+
+[[commands]]
+app = "mutagen.resync"
+description = "resync"
+action = "mutagen.resync"
+type = "action"
+main = true
+
+[[commands]]
+app = "api.logs"
+description = "api.logs"
+action = "upscope.logs.api"
+type = "action"
+main = true
+
+[[commands]]
+app = "api.restart"
+description = "api.restart"
+action = "upscope.restart.api"
+type = "action"
+main = true
+
+[[commands]]
+app = "build.types"
+description = "build.types"
+action = "upscope.build.types"
+type = "action"
+main = true
+
+[[commands]]
+app = "commit.check"
+description = "commit.check"
+action = "commit.check"
+type = "action"
+main = true
+
+[[commands]]
+app = "git.to.master"
+description = "git.to.master"
+action = "git.to.master"
+type = "action"
+main = true
+
+[[commands]]
+app = "extension.build"
+description = "extension.build"
+action = "extension.build"
+type = "action"
+main = true
+
+[[commands]]
+app = "upscope.restart.nginx"
+description = "upscope.restart.nginx"
+action = "upscope.restart.nginx"
+type = "action"
+main = true
+
+[[commands]]
+app = "aerospace.resize.mode"
+description = "aerospace.resize.mode"
+action = "aerospace.resize.mode"
+type = "action"
+main = true
+
+# [[commands]]
+# app = "Google Chrome"
+# icon = "logo-chrome"
+# type = "context"
+# context = "chrome"
+# main = true
+#
+# [[commands]]
+# app = "Google Chrome"
+# action = "open"
+# description = "Open"
+# type = "action"
+# context = "chrome"
+
+# [[commands]]
+# app = "Google Chrome"
+# action = "chrome-cli reload"
+# description = "Reload tab"
+# type = "action"
+# context = "chrome"
+#
+# [[commands]]
+# app = "resync"
+# action = "mutagen-resync"
+# type = "action"
+# main = true
+#
+# [[commands]]
+# app = "Wezterm"
+# icon = "terminal"
+# action = "open"
+# type = "action"
+# main = true
+#
+# [[commands]]
+# app = "Calendar"
+# icon = "calendar-outline"
+# action = "open"
+# type = "action"
+# main = true
+#
+# [[commands]]
+# app = "Finder"
+# icon = "folder-outline"
+# action = "open"
+# type = "action"
+# main = true
+#
+# [[commands]]
+# app = "Obsidian"
+# icon = "document-outline"
+# action = "open"
+# type = "action"
+# main = true
+#
+# [[commands]]
+# app = "System Preferences"
+# type = "context"
+# icon = "cog-outline"
+# context = "system"
+# main = true
+#
+# [[commands]]
+# description = "Volume Down"
+# action = "aerospace volume down"
+# type = "action"
+# context = "system"
+#
+# [[commands]]
+# action = "aerospace volume up"
+# description = "Volume Up"
+# type = "action"
+# context = "system"
+#

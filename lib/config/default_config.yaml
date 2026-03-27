@@ -1,5 +1,4 @@
 dotfiles:
-  repo: "git@github.com:hsk-kr/dotfiles.git"
   config_links:
     - aerospace
     - devdeck

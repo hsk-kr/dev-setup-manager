@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/hsk-kr/dev-setup-manager/lib/config"
-	"github.com/hsk-kr/dev-setup-manager/lib/display"
-	"github.com/hsk-kr/dev-setup-manager/lib/terminal"
-	"github.com/hsk-kr/dev-setup-manager/lib/tools"
+	"github.com/hsk-kr/licokit/lib/config"
+	"github.com/hsk-kr/licokit/lib/display"
+	"github.com/hsk-kr/licokit/lib/terminal"
+	"github.com/hsk-kr/licokit/lib/tools"
 )
 
 func Home(cfg *config.Config) {
@@ -35,7 +35,7 @@ func Home(cfg *config.Config) {
 			if err := tools.SetupDotfiles(cfg.Dotfiles); err != nil {
 				tools.WarningMessage(err.Error())
 			} else {
-				tools.SuccessMessage("Dotfiles setup complete.\n\n• Previous dotfiles have been deleted\n• New dotfiles installed in ~/dev-setup-manager/dotfiles\n• To apply zsh changes, run: source ~/.zshrc")
+				tools.SuccessMessage("Dotfiles setup complete.\n\n• Dotfiles updated via git pull\n• Symlinks refreshed from ~/licokit/dotfiles\n• To apply zsh changes, run: source ~/.zshrc")
 			}
 		case "Guide":
 			Guide()
