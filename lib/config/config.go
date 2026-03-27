@@ -31,12 +31,14 @@ type ToolConfig struct {
 	InstallType        string   `yaml:"install_type"`
 	Package            string   `yaml:"package"`
 	Version            string   `yaml:"version"`
+	InstallCommand     string   `yaml:"install_command"`
 	DetectType         string   `yaml:"detect_type"`
 	DetectValue        string   `yaml:"detect_value"`
 	ManualMessage      string   `yaml:"manual_message"`
 	ZshSource          string   `yaml:"zsh_source"`
 	PostInstallWarning string   `yaml:"post_install_warning"`
 	PostInstallDirs    []string `yaml:"post_install_dirs"`
+	PostInstallScripts []string `yaml:"post_install_scripts"`
 }
 
 // BrewPackage returns the brew package name with version pinning if specified.

@@ -3,6 +3,7 @@ package tools
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/hsk-kr/dev-setup-manager/lib/config"
 	"github.com/hsk-kr/dev-setup-manager/lib/spinner"
@@ -29,6 +30,14 @@ func Install(tool config.ToolConfig) error {
 		if err != nil {
 			return err
 		}
+	case "script":
+		sp := spinner.New(fmt.Sprintf("Installing %s...", tool.Name))
+		sp.Start()
+		err := ExecCommandQuiet("bash", "-c", tool.InstallCommand)
+		sp.Stop()
+		if err != nil {
+			return err
+		}
 	default:
 		return fmt.Errorf("unknown install type: %s", tool.InstallType)
 	}
@@ -45,6 +54,18 @@ func Install(tool config.ToolConfig) error {
 	if tool.ZshSource != "" {
 		if err := AddZshSource(tool.ZshSource); err != nil {
 			return err
+		}
+	}
+
+	// Run post-install scripts
+	for _, script := range tool.PostInstallScripts {
+		expanded := config.ExpandPath(script)
+		sp := spinner.New(fmt.Sprintf("Running %s...", filepath.Base(expanded)))
+		sp.Start()
+		err := ExecCommandQuiet("bash", expanded)
+		sp.Stop()
+		if err != nil {
+			WarningMessage(fmt.Sprintf("Post script %s failed: %s", filepath.Base(expanded), err.Error()))
 		}
 	}
 

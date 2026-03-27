@@ -95,9 +95,9 @@ func TestLoad_DefaultConfig_ToolCount(t *testing.T) {
 		t.Fatalf("Load() error: %v", err)
 	}
 
-	// Default config should have 17 tools
-	if len(cfg.Tools) != 17 {
-		t.Errorf("expected 17 tools, got %d", len(cfg.Tools))
+	// Default config should have 18 tools
+	if len(cfg.Tools) != 18 {
+		t.Errorf("expected 18 tools, got %d", len(cfg.Tools))
 	}
 }
 
@@ -167,7 +167,7 @@ func TestLoad_InstallTypes(t *testing.T) {
 		t.Fatalf("Load() error: %v", err)
 	}
 
-	validInstallTypes := map[string]bool{"brew": true, "cask": true, "manual": true}
+	validInstallTypes := map[string]bool{"brew": true, "cask": true, "manual": true, "script": true}
 	for _, tool := range cfg.Tools {
 		if !validInstallTypes[tool.InstallType] {
 			t.Errorf("Tool %q has invalid install_type: %q", tool.Name, tool.InstallType)
@@ -198,6 +198,19 @@ func TestLoad_ManualToolHasMessage(t *testing.T) {
 	for _, tool := range cfg.Tools {
 		if tool.InstallType == "manual" && tool.ManualMessage == "" {
 			t.Errorf("Tool %q has install_type=manual but no manual_message", tool.Name)
+		}
+	}
+}
+
+func TestLoad_ScriptToolHasCommand(t *testing.T) {
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error: %v", err)
+	}
+
+	for _, tool := range cfg.Tools {
+		if tool.InstallType == "script" && tool.InstallCommand == "" {
+			t.Errorf("Tool %q has install_type=script but no install_command", tool.Name)
 		}
 	}
 }
