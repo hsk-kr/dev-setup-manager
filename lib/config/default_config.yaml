@@ -145,6 +145,12 @@ tools:
     detect_type: command
     detect_value: btop
 
+  - name: terminal-notifier
+    install_type: brew
+    package: terminal-notifier
+    detect_type: command
+    detect_value: terminal-notifier
+
   - name: Claude Code
     install_type: script
     install_command: "curl -fsSL https://claude.ai/install.sh | bash"

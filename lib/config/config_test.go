@@ -95,9 +95,9 @@ func TestLoad_DefaultConfig_ToolCount(t *testing.T) {
 		t.Fatalf("Load() error: %v", err)
 	}
 
-	// Default config should have 18 tools
-	if len(cfg.Tools) != 18 {
-		t.Errorf("expected 18 tools, got %d", len(cfg.Tools))
+	// Default config should have 19 tools
+	if len(cfg.Tools) != 19 {
+		t.Errorf("expected 19 tools, got %d", len(cfg.Tools))
 	}
 }
 
