@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -96,5 +97,7 @@ func BuildPrompt(agent AgentConfig) (string, error) {
 		return "", err
 	}
 
-	return common + "\n\n" + role, nil
+	full := common + "\n\n" + role
+	full = strings.ReplaceAll(full, "{role_name}", agent.Name)
+	return full, nil
 }
