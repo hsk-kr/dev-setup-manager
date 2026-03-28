@@ -1,0 +1,54 @@
+# licokit
+
+macOS dev environment bootstrapper TUI written in Go.
+
+## Build & Run
+
+```bash
+go build -o licokit .    # build
+go run .                  # run from source
+go test ./... -v          # run all tests
+```
+
+Requires Go 1.23+.
+
+## Project Structure
+
+- `main.go` — entry point, signal handling, cursor management
+- `app/` — screens (home menu, tools, agents, guide)
+- `lib/config/` — YAML config loading with embedded defaults + user override at `~/.config/licokit/`
+- `lib/terminal/` — TUI primitives (Select, MultiSelect)
+- `lib/tools/` — tool installation, dotfiles setup, agent tmux launcher
+- `lib/styles/` — lipgloss style definitions
+- `lib/spinner/` — braille spinner animation
+- `lib/display/` — header rendering
+- `dotfiles/` — config files symlinked to `~/.config/` and `~/.claude/`
+
+## Config System
+
+1. User config at `~/.config/licokit/config.yaml` (takes priority)
+2. Embedded default at `lib/config/default_config.yaml`
+
+Same pattern for agents: `~/.config/licokit/agents.yaml` → `lib/config/agents.yaml`
+
+Same pattern for prompts: `~/.config/licokit/prompts/*.md` → `lib/config/prompts/*.md`
+
+## Conventions
+
+- Minimal dependencies: lipgloss (styling), go-tty (input), yaml.v3 (config)
+- Shell out for external tools (tmux, fzf, claude, brew) — no Go wrappers
+- `ExecCommandQuiet` for commands with spinner, `ExecCommand` for interactive output
+- Error handling: `fmt.Errorf("context: %w", err)`, user-facing via `tools.WarningMessage()`
+- Embedded files via `//go:embed` directive
+- vim-style keybindings in TUI (j/k navigation)
+
+## Claude Agents Feature
+
+Creates tmux panes running Claude Code with role-specific system prompts. Pane border colors reflect agent state via `@agent-status` per-pane tmux option (set by Claude Code hooks in `~/.claude/settings.json`):
+- Green = working
+- Red = needs permission
+- Gray = idle
+
+## Release
+
+GitHub Actions builds arm64 macOS binary on `v*` tags via `ncipollo/release-action`.

@@ -13,7 +13,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); echo \"$input\" | claude-session-manager hook-status idle_prompt 2>/dev/null; terminal-notifier -group \"claude-$$\" -title 'Claude Code' -subtitle \"Input Required - $(basename $PWD)\" -message 'Waiting for your input' -sound 'default' 2>/dev/null; printf '\\a' > /dev/tty 2>/dev/null; exit 0"
+            "command": "terminal-notifier -group \"claude-$$\" -title 'Claude Code' -subtitle \"Input Required - $(basename $PWD)\" -message 'Waiting for your input' -sound 'default' 2>/dev/null; printf '\\a' > /dev/tty 2>/dev/null; exit 0"
           }
         ]
       },
@@ -22,7 +22,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); echo \"$input\" | claude-session-manager hook-status permission_prompt 2>/dev/null; terminal-notifier -group \"claude-$$\" -title 'Claude Code' -subtitle \"Permission Required - $(basename $PWD)\" -message 'Needs your approval' -sound 'default' 2>/dev/null; printf '\\a' > /dev/tty 2>/dev/null; exit 0"
+            "command": "terminal-notifier -group \"claude-$$\" -title 'Claude Code' -subtitle \"Permission Required - $(basename $PWD)\" -message 'Needs your approval' -sound 'default' 2>/dev/null; printf '\\a' > /dev/tty 2>/dev/null; exit 0"
           }
         ]
       }
@@ -78,6 +78,9 @@
   "language": "English",
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
-  "voiceEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "voiceEnabled": false,
+  "skipDangerousModePermissionPrompt": false,
+  "permissions": {
+    "defaultMode": "auto"
+  }
 }

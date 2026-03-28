@@ -79,6 +79,7 @@ func LaunchAgentSession(projectDir string, agents []AgentPane) error {
 			return fmt.Errorf("failed to create window: %w", err)
 		}
 		_ = ExecCommandQuiet("tmux", "set-option", "-p", "@agent-role", agents[0].Name)
+		_ = ExecCommandQuiet("tmux", "set-option", "-p", "@agent-status", "working")
 
 		for i := 1; i < agentCount; i++ {
 			cmd := buildClaudeCommand(projectDir, promptFiles[i])
@@ -87,12 +88,13 @@ func LaunchAgentSession(projectDir string, agents []AgentPane) error {
 				return fmt.Errorf("failed to create pane for %s: %w", agents[i].Name, err)
 			}
 			_ = ExecCommandQuiet("tmux", "set-option", "-p", "@agent-role", agents[i].Name)
+			_ = ExecCommandQuiet("tmux", "set-option", "-p", "@agent-status", "working")
 			_ = ExecCommandQuiet("tmux", "select-layout", "tiled")
 		}
 
 		// Show role names in pane borders (per-pane user option, can't be overridden)
 		_ = ExecCommandQuiet("tmux", "set-option", "-w", "pane-border-status", "top")
-		_ = ExecCommandQuiet("tmux", "set-option", "-w", "pane-border-format", " #{@agent-role} ")
+		_ = ExecCommandQuiet("tmux", "set-option", "-w", "pane-border-format", "#{?#{==:#{@agent-status},attention},#[fg=colour220] ● #{@agent-role} ,#[fg=colour40] ● #{@agent-role} }")
 		// Select first pane
 		_ = ExecCommandQuiet("tmux", "select-pane", "-t", "0")
 		return nil
@@ -119,7 +121,7 @@ func LaunchAgentSession(projectDir string, agents []AgentPane) error {
 	}
 
 	_ = ExecCommandQuiet("tmux", "set-option", "-t", sessionName, "pane-border-status", "top")
-	_ = ExecCommandQuiet("tmux", "set-option", "-t", sessionName, "pane-border-format", " #{@agent-role} ")
+	_ = ExecCommandQuiet("tmux", "set-option", "-t", sessionName, "pane-border-format", "#{?#{==:#{@agent-status},attention},#[fg=colour220] ● #{@agent-role} ,#[fg=colour40] ● #{@agent-role} }")
 
 	attachCmd := exec.Command("tmux", "attach-session", "-t", sessionName)
 	attachCmd.Stdin = os.Stdin
