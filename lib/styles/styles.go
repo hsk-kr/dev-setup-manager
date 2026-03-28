@@ -58,4 +58,11 @@ var (
 	LoadingText = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("2")). // green
 			Italic(true)
+
+	Checkbox = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("8")) // gray
+
+	CheckboxSelected = lipgloss.NewStyle().
+				Foreground(lipgloss.Color("2")). // green
+				Bold(true)
 )
