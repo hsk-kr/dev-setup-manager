@@ -13,6 +13,8 @@ func Home(cfg *config.Config) {
 	}, {
 		Name: "Dotfiles",
 	}, {
+		Name: "Claude Agents",
+	}, {
 		Name: "Guide",
 	},
 	}
@@ -37,6 +39,9 @@ func Home(cfg *config.Config) {
 			} else {
 				tools.SuccessMessage("Dotfiles setup complete.\n\n• Dotfiles updated via git pull\n• Symlinks refreshed from ~/licokit/dotfiles\n• To apply zsh changes, run: source ~/.zshrc")
 			}
+		case "Claude Agents":
+			Agents()
+			return // exit licokit after launching
 		case "Guide":
 			Guide()
 		default:
