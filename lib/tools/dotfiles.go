@@ -16,17 +16,28 @@ func SetupDotfiles(dotCfg config.DotfilesConfig) error {
 		return err
 	}
 
+	repo := "https://github.com/hsk-kr/licokit.git"
 	licokitHomePath := filepath.Join(homePath, "licokit")
 	configDirPath := filepath.Join(homePath, ".config")
 	dotfilesPath := filepath.Join(licokitHomePath, "dotfiles")
 
-	// Pull latest changes (dotfiles are part of this repo)
-	sp := spinner.New("Updating licokit...")
-	sp.Start()
-	err = ExecCommandQuiet("git", "-C", licokitHomePath, "pull", "--ff-only")
-	sp.Stop()
-	if err != nil {
-		WarningMessage(fmt.Sprintf("git pull failed (offline?): %s", err.Error()))
+	// Clone or pull the licokit repo
+	if _, err := os.Stat(filepath.Join(licokitHomePath, ".git")); os.IsNotExist(err) {
+		sp := spinner.New("Cloning licokit...")
+		sp.Start()
+		err = ExecCommandQuiet("git", "clone", repo, licokitHomePath)
+		sp.Stop()
+		if err != nil {
+			return fmt.Errorf("git clone failed: %w", err)
+		}
+	} else {
+		sp := spinner.New("Updating licokit...")
+		sp.Start()
+		err = ExecCommandQuiet("git", "-C", licokitHomePath, "pull")
+		sp.Stop()
+		if err != nil {
+			WarningMessage(fmt.Sprintf("git pull failed (offline?): %s", err.Error()))
+		}
 	}
 
 	if err := ExecCommand("mkdir", "-p", configDirPath); err != nil {
@@ -81,8 +92,10 @@ func SetupDotfiles(dotCfg config.DotfilesConfig) error {
 	// Add zsh source
 	if dotCfg.ZshSource != "" {
 		zshSource := dotCfg.ZshSource
-		// Expand ~ in the source path
-		zshSource = config.ExpandPath(zshSource)
+		// Replace ~ with $HOME so the path stays portable across users
+		if len(zshSource) > 0 && zshSource[0] == '~' {
+			zshSource = "$HOME" + zshSource[1:]
+		}
 		return AddZshSource(fmt.Sprintf("source %s", zshSource))
 	}
 
