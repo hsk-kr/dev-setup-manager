@@ -61,37 +61,66 @@ func LaunchAgentSession(projectDir string, agents []AgentPane) error {
 		return fmt.Errorf("claude is required. Install it from the Tools menu")
 	}
 
-	sessionName := generateSessionName(projectDir)
+	// Write prompts to temp files to avoid command-line length limits
+	promptFiles, err := writePromptFiles(agents)
+	if err != nil {
+		return fmt.Errorf("failed to write prompt files: %w", err)
+	}
+	// Note: temp files are NOT cleaned up — each tmux pane needs them at launch time.
+	// They live in os.TempDir() and will be cleaned by the OS.
+
 	agentCount := len(agents)
 
-	// Create session with first agent
-	firstCmd := buildClaudeCommand(projectDir, agents[0])
-	err := ExecCommandQuiet("tmux", "new-session", "-d", "-s", sessionName, "-x", "200", "-y", "50", firstCmd)
+	if os.Getenv("TMUX") != "" {
+		// Inside tmux — create one new window with panes for each agent
+		firstCmd := buildClaudeCommand(projectDir, promptFiles[0])
+		err = ExecCommandQuiet("tmux", "new-window", "-n", "claude-agents", firstCmd)
+		if err != nil {
+			return fmt.Errorf("failed to create window: %w", err)
+		}
+		_ = ExecCommandQuiet("tmux", "set-option", "-p", "@agent-role", agents[0].Name)
+
+		for i := 1; i < agentCount; i++ {
+			cmd := buildClaudeCommand(projectDir, promptFiles[i])
+			err := ExecCommandQuiet("tmux", "split-window", cmd)
+			if err != nil {
+				return fmt.Errorf("failed to create pane for %s: %w", agents[i].Name, err)
+			}
+			_ = ExecCommandQuiet("tmux", "set-option", "-p", "@agent-role", agents[i].Name)
+			_ = ExecCommandQuiet("tmux", "select-layout", "tiled")
+		}
+
+		// Show role names in pane borders (per-pane user option, can't be overridden)
+		_ = ExecCommandQuiet("tmux", "set-option", "-w", "pane-border-status", "top")
+		_ = ExecCommandQuiet("tmux", "set-option", "-w", "pane-border-format", " #{@agent-role} ")
+		// Select first pane
+		_ = ExecCommandQuiet("tmux", "select-pane", "-t", "0")
+		return nil
+	}
+
+	// Not inside tmux — create a new session
+	sessionName := generateSessionName(projectDir)
+
+	firstCmd := buildClaudeCommand(projectDir, promptFiles[0])
+	err = ExecCommandQuiet("tmux", "new-session", "-d", "-s", sessionName, "-n", "claude-agents", firstCmd)
 	if err != nil {
 		return fmt.Errorf("failed to create tmux session: %w", err)
 	}
+	_ = ExecCommandQuiet("tmux", "set-option", "-t", sessionName, "-p", "@agent-role", agents[0].Name)
 
-	// Rename first pane
-	_ = ExecCommandQuiet("tmux", "select-pane", "-t", sessionName+":0.0", "-T", agents[0].Name)
-
-	// Create remaining panes
 	for i := 1; i < agentCount; i++ {
-		cmd := buildClaudeCommand(projectDir, agents[i])
+		cmd := buildClaudeCommand(projectDir, promptFiles[i])
 		err := ExecCommandQuiet("tmux", "split-window", "-t", sessionName, cmd)
 		if err != nil {
 			return fmt.Errorf("failed to create pane for %s: %w", agents[i].Name, err)
 		}
-		_ = ExecCommandQuiet("tmux", "select-pane", "-t", sessionName, "-T", agents[i].Name)
+		_ = ExecCommandQuiet("tmux", "set-option", "-p", "@agent-role", agents[i].Name)
+		_ = ExecCommandQuiet("tmux", "select-layout", "-t", sessionName, "tiled")
 	}
 
-	// Apply layout
-	applyLayout(sessionName, agentCount)
-
-	// Enable pane border status to show role names
 	_ = ExecCommandQuiet("tmux", "set-option", "-t", sessionName, "pane-border-status", "top")
-	_ = ExecCommandQuiet("tmux", "set-option", "-t", sessionName, "pane-border-format", "#{pane_title}")
+	_ = ExecCommandQuiet("tmux", "set-option", "-t", sessionName, "pane-border-format", " #{@agent-role} ")
 
-	// Attach to session
 	attachCmd := exec.Command("tmux", "attach-session", "-t", sessionName)
 	attachCmd.Stdin = os.Stdin
 	attachCmd.Stdout = os.Stdout
@@ -99,11 +128,35 @@ func LaunchAgentSession(projectDir string, agents []AgentPane) error {
 	return attachCmd.Run()
 }
 
-func buildClaudeCommand(projectDir string, agent AgentPane) string {
-	if agent.Prompt == "" {
+// writePromptFiles writes each agent's prompt to a temp file and returns the file paths.
+// Returns empty string for agents with no prompt (Free role).
+func writePromptFiles(agents []AgentPane) ([]string, error) {
+	paths := make([]string, len(agents))
+	for i, agent := range agents {
+		if agent.Prompt == "" {
+			paths[i] = ""
+			continue
+		}
+		safeName := strings.ReplaceAll(agent.Name, "/", "-")
+		f, err := os.CreateTemp("", fmt.Sprintf("claude-agent-%s-*.md", safeName))
+		if err != nil {
+			return nil, err
+		}
+		if _, err := f.WriteString(agent.Prompt); err != nil {
+			f.Close()
+			return nil, err
+		}
+		f.Close()
+		paths[i] = f.Name()
+	}
+	return paths, nil
+}
+
+func buildClaudeCommand(projectDir string, promptFile string) string {
+	if promptFile == "" {
 		return fmt.Sprintf("cd %s && claude", shellEscape(projectDir))
 	}
-	return fmt.Sprintf("cd %s && claude --append-system-prompt %s", shellEscape(projectDir), shellEscape(agent.Prompt))
+	return fmt.Sprintf("cd %s && claude --append-system-prompt-file %s", shellEscape(projectDir), shellEscape(promptFile))
 }
 
 func shellEscape(s string) string {
@@ -125,14 +178,3 @@ func generateSessionName(projectDir string) string {
 	}
 }
 
-func applyLayout(sessionName string, count int) {
-	// Layout: max 2 rows, expand horizontally first
-	// 1: fullscreen, 2: 2 cols, 3: 3 cols, 4: 2x2, 5: 3+2, 6: 3x2, 7: 4+3
-	if count <= 3 {
-		// Single row: even-horizontal
-		_ = ExecCommandQuiet("tmux", "select-layout", "-t", sessionName, "even-horizontal")
-	} else {
-		// Two rows: tiled gives us a grid
-		_ = ExecCommandQuiet("tmux", "select-layout", "-t", sessionName, "tiled")
-	}
-}
