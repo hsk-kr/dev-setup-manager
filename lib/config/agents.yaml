@@ -23,6 +23,10 @@ agents:
     description: "Reviews UI/UX"
     prompt_file: ui-ux-designer.md
 
+  - name: Teacher
+    description: "Quizzes you about your code"
+    prompt_file: teacher.md
+
   - name: Free
     description: "Plain session"
     prompt_file: ""

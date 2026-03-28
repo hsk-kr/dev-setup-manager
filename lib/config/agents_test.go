@@ -43,8 +43,8 @@ func TestLoadAgents_DefaultConfig(t *testing.T) {
 		t.Fatalf("LoadAgents() error: %v", err)
 	}
 
-	if len(cfg.Agents) != 7 {
-		t.Errorf("expected 7 agents, got %d", len(cfg.Agents))
+	if len(cfg.Agents) != 8 {
+		t.Errorf("expected 8 agents, got %d", len(cfg.Agents))
 	}
 
 	for _, agent := range cfg.Agents {
